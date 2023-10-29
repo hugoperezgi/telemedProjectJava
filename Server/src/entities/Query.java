@@ -1,8 +1,6 @@
 package entities;
 
 import java.io.Serializable;
-// import java.sql.Date;
-// import java.util.List;
 import java.sql.Date;
 
 public class Query implements Serializable {
@@ -19,7 +17,7 @@ public class Query implements Serializable {
 
     private User[] user_List=null; 
     private User user=null;
-    private Integer userToDelete=null;
+    private Integer userIdToDelete=null;
 
     private Patient[] patient_List=null; 
     private Patient patient=null;
@@ -59,6 +57,7 @@ public class Query implements Serializable {
     public void construct_SendReport_Query(Integer patientId, String symptoms, Date date){
         this.queryType = (byte) 2;
         this.medicalTest = new MedicalTest(patientId, symptoms, date);
+        this.paramString=null;
     }
 
     /**
@@ -74,7 +73,7 @@ public class Query implements Serializable {
 
     /**
      * Constructor for Query Type 3 <b>Create user</b> <p>
-     * Create user, expect a control response <p>
+     * Create user, expect a control response with userID <p>
      * {@code Client -> Server} <p>
      */
     public void construct_CreateUser_Query(String user, byte[] psw, Integer role){
@@ -99,7 +98,7 @@ public class Query implements Serializable {
      */
     public void construct_DeleteUser_Query(Integer userID){
         this.queryType = (byte) 5;
-        this.userToDelete=userID;
+        this.userIdToDelete=userID;
     }
 
     /**
@@ -132,13 +131,13 @@ public class Query implements Serializable {
     } 
 
     /**
-     * Constructor for Query Type 9 <b>Send all patients</b> <p>
-     * Response to query 6 of client <p>
+     * Constructor for Query Type 9 <b>Send all users</b> <p>
+     * Response to query 13 of client <p>
      * {@code Server -> Client} <p>
      */
-    public void construct_SendAllPatients_Query(Patient[] patients){
+    public void construct_SendAllUsers_Query(User[] users){
         this.queryType = (byte) 9;
-        this.patient_List=patients;
+        this.user_List=users;
     } 
 
     /**
@@ -179,6 +178,83 @@ public class Query implements Serializable {
         this.queryType = (byte) 12;
 
     } 
+
+    /**
+     * Constructor for Query Type 13 <b>Show all users</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_ShowAllUsers_Query(){
+        this.queryType = (byte) 13;
+
+    } 
+
+    /**
+     * Constructor for Query Type 14 <b>Show all workers</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_ShowAllWorkers_Query(){
+        this.queryType = (byte) 14;
+
+    } 
+
+    /**
+     * Constructor for Query Type 15 <b>Create Patient</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_CreatePatient_Query(Patient p){
+        this.queryType = (byte) 15;
+        this.patient=p;
+    } 
+
+    /**
+     * Constructor for Query Type 16 <b>Edit Patient</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_EditPatient_Query(Patient p){
+        this.queryType = (byte) 16;
+        this.patient=p;
+    } 
+
+    /**
+     * Constructor for Query Type 17 <b>Create Worker</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_CreateWorker_Query(Integer userID, String name, String surname){
+        this.queryType = (byte) 17;
+        this.worker=new Worker(userID, name, surname);
+    } 
+    
+    /**
+     * Constructor for Query Type 18 <b>Create Patient</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_EditWorker_Query(Integer userID, String name, String surname){
+        this.queryType = (byte) 18;
+        this.worker=new Worker(userID, name, surname);
+    } 
+
+    /**
+     * Constructor for Query Type 19 <b>Create Patient</b> <p>
+     * Response to query 6 of client.<p>
+     * {@code Server -> Client} <p>
+     */
+    public void construct_SendAllPatients_Query(Patient[] patients){
+        this.queryType = (byte) 19;
+        this.patient_List=patients;
+    } 
+
+
+    /**
+     * Constructor for Query Type 20 <b>Create Patient</b> <p>
+     * {@code Server -> Client} <p>
+     */
+    public void construct_SendAllWorkers_Query(Worker[] workers){
+        this.queryType = (byte) 20;
+        this.worker_List=workers;
+    } 
+
+
+ 
     
     /**Type of the query
      * <p>{@code 0} <b>Log in:</b> Cli -> Srv
@@ -190,10 +266,19 @@ public class Query implements Serializable {
      * <p>{@code 6} <b>Show all patients:</b> Cli -> Srv
      * <p>{@code 7} <b>Show clinical history:</b> Cli -> Srv
      * <p>{@code 8} <b>Edit report:</b> Cli -> Srv
-     * <p>{@code 9} <b>Send all patients:</b> Srv -> Cli
+     * <p>{@code 9} <b>Send all users:</b> Srv -> Cli
      * <p>{@code 10} <b>Send clinical history:</b> Srv -> Cli
-     * <p>{@code 11} <b>Check Real time</b> Cli -> Srv
-     * <p>{@code 12} <b>Send RT params</b> Srv -> Cli
+     * <p>{@code 11} <b>Check Real time:</b> Cli -> Srv
+     * <p>{@code 12} <b>Send RT params:</b> Srv -> Cli
+     * <p>{@code 13} <b>Show all users:</b> Cli -> Srv
+     * <p>{@code 14} <b>Show all workers:</b> Cli -> Srv
+     * <p>{@code 15} <b>Create patient:</b> Cli -> Srv
+     * <p>{@code 16} <b>Edit patient:</b> Cli -> Srv
+     * <p>{@code 17} <b>Create worker:</b> Cli -> Srv
+     * <p>{@code 18} <b>Edit worker:</b> Cli -> Srv
+     * <p>{@code 19} <b>Send all patients:</b> Srv -> Cli
+     * <p>{@code 20} <b>Send all workers:</b> Srv -> Cli
+
     */
     public int getQueryType() {
         return queryType;
@@ -227,12 +312,26 @@ public class Query implements Serializable {
     public String getControlMsg() {
         return controlMsg;
     }
+    /**
+     * Valid for query types:
+     * <p> {@code 3} - Create User
+     * <p> {@code 4} - Edit User
+     */
     public User getUser() {
         return user;
     }
+    /**
+     * Valid for query types:
+     * <p> {@code 2} - Send Report
+     */
     public MedicalTest getMedicalTest() {
         return medicalTest;
     }
+    /**
+     * Valid for query types:
+     * <p> {@code 2} - Send Report
+     * <p> If {@code return=null} then transmission has ended
+     */
     public String getParamString() {
         return paramString;
     }
@@ -243,14 +342,34 @@ public class Query implements Serializable {
         return patient_List;
     }
     /**
-     * Get the used marked for deletion.
+     * Get the usedID marked for deletion.
      */
-    public Integer getUserToDelete() {
-        return userToDelete;
+    public Integer getUserIdToDelete() {
+        return userIdToDelete;
+    }
+    /**
+     * Valid for query types:
+     * <p> {@code 15} - Create patient
+     * <p> {@code 16} - Edit patient
+     */
+    public Patient getPatient() {
+        return patient;
     }
 
+    public User[] getUser_List() {
+        return user_List;
+    }
 
-    //TODO Edit Worker/create worker
-    //TODO Show all users
-    //TODO Edit patient/create patient
+    public Worker[] getWorker_List() {
+        return worker_List;
+    }
+    /**
+     * Valid for query types:
+     * <p> {@code 17} - Create patient
+     * <p> {@code 18} - Edit patient
+     */
+    public Worker getWorker() {
+        return worker;
+    }
+
 }

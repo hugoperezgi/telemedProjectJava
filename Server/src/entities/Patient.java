@@ -47,8 +47,6 @@ public class Patient implements Serializable {
             case "B+": //B+
                 this.bloodTypeAndGender|=0b00010100;
                 break;
-            default:
-                throw new Error("Not a valid type");
         }
     }
 
