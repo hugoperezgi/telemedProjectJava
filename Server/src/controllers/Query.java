@@ -1,7 +1,9 @@
-package entities;
+package controllers;
 
 import java.io.Serializable;
 import java.sql.Date;
+
+import entities.*;
 
 public class Query implements Serializable {
     static final long serialVersionUID = 42L;

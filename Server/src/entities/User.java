@@ -15,18 +15,18 @@ public class User implements Serializable {
 
     private Integer role;
 
-    User(Integer id, String uname, byte[] psw, int role){
+    public User(Integer id, String uname, byte[] psw, int role){
         this.userID=id;
         this.username=uname;
         this.passwordHash=psw;
         this.role=role;
     }
-    User(String uname, byte[] psw, int role){
+    public User(String uname, byte[] psw, int role){
         this.username=uname;
         this.passwordHash=psw;
         this.role=role;
     }
-    User(String uname, byte[] psw){
+    public User(String uname, byte[] psw){
         this.username=uname;
         this.passwordHash=psw;
     }

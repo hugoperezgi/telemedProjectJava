@@ -14,13 +14,13 @@ public class MedicalTest implements Serializable {
 
     private Integer[] params; 
 
-    MedicalTest(Integer patID, String symptoms, Date date){
+    public MedicalTest(Integer patID, String symptoms, Date date){
         this.patientID=patID;
         this.patientComments=symptoms;
         this.reportDate=date;
     }
     
-    MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String params){
+    public MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String params){
         this.patientID=patID;
         this.patientComments=symptoms;
         this.reportDate=date;
@@ -29,7 +29,7 @@ public class MedicalTest implements Serializable {
         this.params=getParamsFromString(params);
     }
 
-    MedicalTest(Integer id, String doctVeredic){
+    public MedicalTest(Integer id, String doctVeredic){
         this.testID=id;
         this.patientComments=doctVeredic;
     }     
