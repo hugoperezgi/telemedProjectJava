@@ -1,9 +1,13 @@
 package controllers;
 
 import java.rmi.NotBoundException;
+import java.security.spec.KeySpec;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 import entities.*;
 
@@ -72,6 +76,13 @@ public class SQL {
         s4.executeUpdate(str4);                                       
         s4.close();        
 
+		try {
+			this.addUser(new User("admin", hashPassword("admin"), 0));
+		} catch (Exception e) {
+			System.out.println("Something went wrong while creating the admin");
+			e.printStackTrace();
+		}
+
 		System.out.println("Database setup.");		
     }                
 	
@@ -84,6 +95,7 @@ public class SQL {
         prepS.executeUpdate();
         prepS.close();
 	}
+
 	public User getUser(Integer userId) throws SQLException{
 		String str = "SELECT * FROM users WHERE userId = ?";
 		PreparedStatement p = c.prepareStatement(str);
@@ -384,6 +396,13 @@ public class SQL {
 		Integer lastId = rs.getInt("lastId");
 		return lastId;
 	}
+
+	private byte[] hashPassword(String psw) throws Exception{
+        byte[] s = {(byte) 0, (byte) 1};
+        KeySpec k = new PBEKeySpec(psw.toCharArray(), s, 65353, 256);
+        SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        return f.generateSecret(k).getEncoded();
+    }  
 
     
 }
