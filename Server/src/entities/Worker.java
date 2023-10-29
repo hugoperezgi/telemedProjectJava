@@ -13,6 +13,7 @@ public class Worker implements Serializable {
     private String surname;
 
     public Worker(Integer userID, String name, String surname){
+        this.userID=userID;
         this.name=name;
         this.surname=surname;
     }
@@ -24,4 +25,17 @@ public class Worker implements Serializable {
         this.surname=surname;
     }
 
+
+    public String getName() {
+        return name;
+    }
+    public String getSurname() {
+        return surname;
+    }
+    public Integer getUserID() {
+        return userID;
+    }
+    public Integer getWorkerID() {
+        return workerID;
+    }
 }

@@ -14,6 +14,7 @@ public class User implements Serializable {
         //User login info
 
     private Integer role;
+        //0:Admin 1:medstaff 2:Patient	
 
     public User(Integer id, String uname, byte[] psw, int role){
         this.userID=id;
@@ -29,6 +30,19 @@ public class User implements Serializable {
     public User(String uname, byte[] psw){
         this.username=uname;
         this.passwordHash=psw;
+    }
+
+    public byte[] getPasswordHash() {
+        return passwordHash;
+    }
+    public Integer getRole() {
+        return role;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public Integer getUserID() {
+        return userID;
     }
 
 }

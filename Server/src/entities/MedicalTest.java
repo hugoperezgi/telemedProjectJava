@@ -40,6 +40,7 @@ public class MedicalTest implements Serializable {
      * @return <b>params</b> Integer[ ] with the parameters
      */
     private Integer[] getParamsFromString(String paramString){
+        if(params==null){return null;}
         String[] s=paramString.split(" ");
         Integer[] params= new Integer[s.length];
         for (int i=0; i<s.length;i++) {
@@ -61,6 +62,22 @@ public class MedicalTest implements Serializable {
         return s;
     }
 
+    public Integer getPatientID() {
+        return patientID;
+    }
+    
+    public String getPatientComments() {
+        return patientComments;
+    }
 
+    public Date getReportDate() {
+        return reportDate;
+    }
 
+    public String getDoctorComments() {
+        return doctorComments;
+    }
+    public Integer getTestID() {
+        return testID;
+    }
 }
