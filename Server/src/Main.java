@@ -19,8 +19,8 @@ public class Main extends Application {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/servergui.fxml"));
 		Parent root = loader.load();
 
-        // ServerGUIController servControl = loader.getController();
-		// servControl.setMainThread(mainThread);
+        ServerGUIController servControl = loader.getController();
+		servControl.setMainThread(mainThread);
 
         // Image windowIcon = new Image("img/logo.png");
         // primaryStage.getIcons().add(windowIcon);	

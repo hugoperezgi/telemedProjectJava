@@ -31,7 +31,7 @@ public class SQL {
         String str = "CREATE TABLE users " 
                     + "(userId INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + " username TEXT NOT NULL unique,"
-                    + " password VARBINARY(128) NOT NULL," //psw hashcode			   
+                    + " password VARBINARY(32) NOT NULL," //psw hashcode			   
                     + " role INTEGER NOT NULL)"; //0:Admin 1:medstaff 2:Patient		   
         s.executeUpdate(str);                                       
         s.close();        
@@ -109,11 +109,11 @@ public class SQL {
 		rs.close();
 		return u;
 	}
-	public User checkPassword(String username, String password) throws SQLException{
+	public User checkPassword(String username, byte[] password) throws SQLException{
 		String str = "SELECT * FROM users WHERE username = ? AND password = ?";
 		PreparedStatement p = c.prepareStatement(str);
 		p.setString(1, username);
-		p.setString(1, password);
+		p.setBytes(2, password);
 		ResultSet rs = p.executeQuery();
 		User u = null;
 		if(rs.next()){
@@ -397,7 +397,7 @@ public class SQL {
 		return lastId;
 	}
 
-	private byte[] hashPassword(String psw) throws Exception{
+	public static byte[] hashPassword(String psw) throws Exception{
         byte[] s = {(byte) 0, (byte) 1};
         KeySpec k = new PBEKeySpec(psw.toCharArray(), s, 65353, 256);
         SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");

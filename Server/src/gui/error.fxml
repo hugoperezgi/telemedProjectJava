@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #262a31;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text fill="#abb2bf" layoutX="54.0" layoutY="154.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wrong user/password, or you're not an admin account. ">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fill="#abb2bf" layoutX="123.0" layoutY="254.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please confirm using an Admin account.">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+   </children>
+</Pane>

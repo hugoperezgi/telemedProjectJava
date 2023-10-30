@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class ServerThread extends Thread{
     
     private ServerSocketChannel serverSocket=null;
-    private static SQL sql= new SQL();
+    public static SQL sql= new SQL();
 
     public ServerThread(){
     }
@@ -34,8 +34,10 @@ public class ServerThread extends Thread{
                     //Thread starts working
 
             } catch (Exception e) {
-                System.out.println("Something went wrong while accepting a new client.");
-                e.printStackTrace();
+                if(ClientHandler.serverRunning){
+                    System.out.println("Something went wrong while accepting a new client.");
+                    e.printStackTrace();
+                }
             }
 
         }
@@ -91,7 +93,7 @@ public class ServerThread extends Thread{
 
     }
 
-    private void serverShutdown(){
+    public void serverShutdown(){
 
         ClientHandler.serverRunning = false;
             //Shuts down every thread while() loop
@@ -112,7 +114,7 @@ public class ServerThread extends Thread{
             }
         }
 
-        System.exit(-1);
+        System.exit(0);
             //Exits Java
 
     }
