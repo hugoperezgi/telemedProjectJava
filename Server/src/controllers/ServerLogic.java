@@ -1,9 +1,24 @@
 package controllers;
 
+import entities.*;
+
 public class ServerLogic {
     
-    public static Query handle_logInQuery(Query clientQuery){
+    public static Query handle_logInQuery(Query clientQuery, ClientHandler c){
         Query q = new Query();
+        try {
+            User u=clientQuery.getUser();
+            User loggedUser=ServerThread.sql.checkPassword(u.getUsername(), u.getPasswordHash());
+            if(loggedUser==null){
+                q.construct_Control_Query("WrongUserOrPassword");
+            }else{
+                c.userID = loggedUser.getUserID();
+                c.role = loggedUser.getRole();
+                q.construct_Control_Query("LoggedIn:"+c.role);
+            }
+        } catch (Exception e) {
+            q.construct_Control_Query("Error");
+        }
         return q;
     }
     public static Query handle_sendReportQuery(Query clientQuery){

@@ -9,6 +9,9 @@ public class ClientHandler extends Thread {
 
     private SocketChannel sck;
     private Query clientQuery=null, servQuery=null;
+
+    public Integer userID=null;
+    public Integer role=null;
     
     public static boolean serverRunning=true;
     public static int currentConnectedUsers;
@@ -37,7 +40,7 @@ public class ClientHandler extends Thread {
                     //Process the query if data type is correct
                     switch (clientQuery.getQueryType()) { //1 9 10 12 19 20
                         case 0: // login
-                            servQuery = ServerLogic.handle_logInQuery(clientQuery);
+                            servQuery = ServerLogic.handle_logInQuery(clientQuery,this);
                             break;                
                         case 2: // Send Report
                             servQuery = ServerLogic.handle_sendReportQuery(clientQuery);

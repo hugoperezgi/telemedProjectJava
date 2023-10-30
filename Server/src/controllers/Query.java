@@ -316,6 +316,7 @@ public class Query implements Serializable {
     }
     /**
      * Valid for query types:
+     * <p> {@code 1} - Log in
      * <p> {@code 3} - Create User
      * <p> {@code 4} - Edit User
      */
