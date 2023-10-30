@@ -96,7 +96,7 @@ public class SQL {
         prepS.close();
 	}
 
-	public List<User> getAllUsers() throws SQLException{ //TODO
+	public List<User> getAllUsers() throws SQLException{ 
 		String str = "SELECT (userId, username, role) FROM users";
 		PreparedStatement p = c.prepareStatement(str);
 		ResultSet rs = p.executeQuery();

@@ -24,13 +24,15 @@ public class ClientHandler extends Thread {
     @Override
     public void run() {
         try {
+            
+            //Create the input/output streams for our queries
+            ObjectInputStream ois = new ObjectInputStream(this.sck.socket().getInputStream());
+            ObjectOutputStream oos = new ObjectOutputStream(this.sck.socket().getOutputStream());
 
             while(true){
 
                 //Get data query from client
-                ObjectInputStream ois = new ObjectInputStream(this.sck.socket().getInputStream());
                 clientQuery=(Query) ois.readObject();
-                ois.close(); //TODO puede esto tenga q desparecer
 
                 if(clientQuery==null){
 
@@ -91,10 +93,7 @@ public class ClientHandler extends Thread {
                 }
 
                 //Send data query back to client
-                ObjectOutputStream oos = new ObjectOutputStream(this.sck.socket().getOutputStream());
                 oos.writeObject(servQuery);
-                oos.close(); //TODO idem here
-
 
             }
         

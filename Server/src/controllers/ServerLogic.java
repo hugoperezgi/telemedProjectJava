@@ -23,10 +23,12 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_sendReportQuery(Query clientQuery){
         Query q = new Query();
         return q;
     }
+
     public static Query handle_createUserQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -41,6 +43,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_editUserQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -61,6 +64,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_deleteUserQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -71,6 +75,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_showAllPatientsQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -80,6 +85,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_showClinicalHistoryQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -90,6 +96,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_editReportQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -101,6 +108,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_checkRealTimeQuery(Query clientQuery){ //TODO fml
         Query q = new Query();
         try {
@@ -110,6 +118,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_showAllUsersQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -119,6 +128,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_showAllWorkersQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -128,6 +138,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_createPatientQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -138,6 +149,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_editPatientQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -149,6 +161,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_createWorkerQuery(Query clientQuery){
         Query q = new Query();
         try {
@@ -159,6 +172,7 @@ public class ServerLogic {
         }
         return q;
     }
+
     public static Query handle_editWorkerQuery(Query clientQuery){
         Query q = new Query();
         try {
