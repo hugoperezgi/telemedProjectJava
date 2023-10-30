@@ -27,6 +27,12 @@ public class ServerLogic {
     }
     public static Query handle_createUserQuery(Query clientQuery){
         Query q = new Query();
+        try {
+            ServerThread.sql.addUser(clientQuery.getUser());
+            q.construct_Control_Query("Success");
+        } catch (Exception e) {
+            q.construct_Control_Query("Error");
+        }
         return q;
     }
     public static Query handle_editUserQuery(Query clientQuery){
