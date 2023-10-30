@@ -16,7 +16,7 @@ public class User implements Serializable {
     private Integer role;
         //0:Admin 1:Doctor 2:Patient	
 
-    public User(Integer id, String uname, byte[] psw, int role){
+    public User(Integer id, String uname, byte[] psw, Integer role){
         this.userID=id;
         this.username=uname;
         this.passwordHash=psw;

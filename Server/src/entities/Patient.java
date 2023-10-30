@@ -18,6 +18,9 @@ public class Patient implements Serializable {
 
     //(patientID,name,surname,gender,birthdate,blood_type,userId)
 
+    /**
+     * DO NOT USE FOR PATIENT EDIT.
+     */
     public Patient(Integer userid, Integer patientid, String name, String surname, String bloodtype, String gender, Date bdate){
         this.userID=userid;
         this.patientID=patientid;
@@ -29,7 +32,7 @@ public class Patient implements Serializable {
     }
 
     /**
-     * Patient constructor for edits on patient
+     * Patient constructor for edits on patient, use setters to change parameters
      */
     public Patient(Integer patientid){
         this.patientID=patientid;
@@ -66,6 +69,7 @@ public class Patient implements Serializable {
             case "B+": //B+
                 this.bloodTypeAndGender|=0b00010100;
                 break;
+            default:break;
         }
     }
 
@@ -94,6 +98,9 @@ public class Patient implements Serializable {
             this.bloodTypeAndGender|=0b00000001;
         } else if (gender=="Female") {
             this.bloodTypeAndGender&=0b11111100;
+        } else {
+            this.bloodTypeAndGender&=0b11111100;
+            this.bloodTypeAndGender|=0b00000010;
         }
     }   
 
