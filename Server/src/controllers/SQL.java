@@ -96,6 +96,19 @@ public class SQL {
         prepS.close();
 	}
 
+	public List<User> getAllUsers() throws SQLException{ //TODO
+		String str = "SELECT (userId, username, role) FROM users";
+		PreparedStatement p = c.prepareStatement(str);
+		ResultSet rs = p.executeQuery();
+		List <User> uList = new ArrayList<User>();
+		while(rs.next()){
+			uList.add(new User(rs.getInt("userId"), rs.getString("username"), null, rs.getInt("role")));
+		}
+		p.close();
+		rs.close();
+		return uList;
+	}
+
 	public User getUser(Integer userId) throws SQLException{
 		String str = "SELECT * FROM users WHERE userId = ?";
 		PreparedStatement p = c.prepareStatement(str);
@@ -108,6 +121,19 @@ public class SQL {
 		p.close();
 		rs.close();
 		return u;
+	}
+	public boolean isUserNameFree(String username) throws SQLException{
+		String str = "SELECT * FROM users WHERE username = ?";
+		PreparedStatement p = c.prepareStatement(str);
+		p.setString(1, username);
+		ResultSet rs = p.executeQuery();
+		User u = null;
+		if(rs.next()){
+			u= new User(rs.getInt("userId"), rs.getString("username"), null, rs.getInt("role"));
+		}
+		p.close();
+		rs.close();
+		if(u==null){return true;}else{return false;}
 	}
 	public User checkPassword(String username, byte[] password) throws SQLException{
 		String str = "SELECT * FROM users WHERE username = ? AND password = ?";
@@ -220,10 +246,22 @@ public class SQL {
 		return mList;
 	}
     
-	public List<Patient> searchPatient(String surname) throws SQLException, NotBoundException {
-		String str = "SELECT * FROM patients WHERE surname LIKE ?";
+	// public List<Patient> searchPatient(String surname) throws SQLException, NotBoundException {
+	// 	String str = "SELECT * FROM patients WHERE surname LIKE ?";
+	// 	PreparedStatement p = c.prepareStatement(str);
+	// 	p.setString(1,"%" + surname + "%");
+	// 	ResultSet rs = p.executeQuery();
+	// 	List <Patient> pList = new ArrayList<Patient>();
+	// 	while(rs.next()){
+    //         pList.add( new Patient(rs.getInt("userId"), rs.getInt("patientID"), rs.getString("name"), rs.getString("surname"), rs.getString("blood_type"), rs.getString("gender"), rs.getDate("birthdate")) );
+	// 	}
+	// 	p.close();
+	// 	rs.close();
+	// 	return pList;
+	// }
+	public List<Patient> selectAllPatients() throws SQLException, NotBoundException {
+		String str = "SELECT * FROM patients";
 		PreparedStatement p = c.prepareStatement(str);
-		p.setString(1,"%" + surname + "%");
 		ResultSet rs = p.executeQuery();
 		List <Patient> pList = new ArrayList<Patient>();
 		while(rs.next()){
@@ -250,10 +288,22 @@ public class SQL {
 	}
 	
 	
-	public List<Worker> searchWorker(String surname) throws SQLException, NotBoundException {
-		String str = "SELECT * FROM workers WHERE workerSurname LIKE ?";
+	// public List<Worker> searchWorker(String surname) throws SQLException, NotBoundException {
+	// 	String str = "SELECT * FROM workers WHERE workerSurname LIKE ?";
+	// 	PreparedStatement p = c.prepareStatement(str);
+	// 	p.setString(1,"%" + surname + "%");
+	// 	ResultSet rs = p.executeQuery();
+	// 	List <Worker> wList = new ArrayList<Worker>();
+	// 	while(rs.next()){ 
+	// 		wList.add( new Worker(rs.getInt("workerId"), rs.getString("workerName"), rs.getString("workerSurname")) );
+	// 	}
+	// 	p.close();
+	// 	rs.close();
+	// 	return wList;
+	// }
+	public List<Worker> getAllWorkers() throws SQLException, NotBoundException {
+		String str = "SELECT * FROM workers";
 		PreparedStatement p = c.prepareStatement(str);
-		p.setString(1,"%" + surname + "%");
 		ResultSet rs = p.executeQuery();
 		List <Worker> wList = new ArrayList<Worker>();
 		while(rs.next()){ 
@@ -387,6 +437,27 @@ public class SQL {
 			p.executeUpdate();
 		}
 
+	}
+
+	public void editWorker(Worker w) throws SQLException{
+		String str;
+		PreparedStatement p;
+
+		if(w.getName()!=null){
+			str = "UPDATE patients SET workerName = ? WHERE workerId = ?";
+			p = c.prepareStatement(str);
+			p.setString(1, w.getName());
+			p.setInt(2, w.getWorkerID());
+			p.executeUpdate();	
+		}
+		if(w.getSurname()!=null){
+			str = "UPDATE patients SET workerSurname = ? WHERE workerId = ?";
+			p = c.prepareStatement(str);
+			p.setString(1, w.getSurname());
+			p.setInt(2, w.getWorkerID());
+			p.executeUpdate();	
+		}
+		
 	}
 
 	public int getLastIdIntroduced() throws SQLException {

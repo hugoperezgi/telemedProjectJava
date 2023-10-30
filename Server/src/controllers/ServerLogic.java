@@ -30,9 +30,12 @@ public class ServerLogic {
     public static Query handle_createUserQuery(Query clientQuery){
         Query q = new Query();
         try {
-            //TODO Check duplicate username
-            ServerThread.sql.addUser(clientQuery.getUser());
-            q.construct_Control_Query("Success");
+            if(ServerThread.sql.isUserNameFree(null)){
+                ServerThread.sql.addUser(clientQuery.getUser());
+                q.construct_Control_Query("Success");
+            }else{
+                q.construct_Control_Query("UsernameTaken");
+            }
         } catch (Exception e) {
             q.construct_Control_Query("Error");
         }
@@ -42,8 +45,12 @@ public class ServerLogic {
         Query q = new Query();
         try {
             if(clientQuery.getUser().getUsername()!=null){
-                //TODO Check duplicate username
-                ServerThread.sql.changeUserName(clientQuery.getUser().getUserID(), clientQuery.getUser().getUsername());
+                if(ServerThread.sql.isUserNameFree(null)){
+                    ServerThread.sql.changeUserName(clientQuery.getUser().getUserID(), clientQuery.getUser().getUsername());
+                }else{
+                    q.construct_Control_Query("UsernameTaken");
+                    return q;   //If edit user tried to change both username and password, username change wont work unless username is unique
+                }
             }
             if(clientQuery.getUser().getPasswordHash()!=null){
                 ServerThread.sql.changeUserPassword(clientQuery.getUser().getUserID(), clientQuery.getUser().getPasswordHash());
@@ -67,7 +74,7 @@ public class ServerLogic {
     public static Query handle_showAllPatientsQuery(Query clientQuery){
         Query q = new Query();
         try {
-            // ServerThread.sql. TODO QUERY
+            q.construct_SendAllPatients_Query(ServerThread.sql.selectAllPatients());
         } catch (Exception e) {
             q.construct_Control_Query("Error");
         }
@@ -106,7 +113,7 @@ public class ServerLogic {
     public static Query handle_showAllUsersQuery(Query clientQuery){
         Query q = new Query();
         try {
-            // ServerThread.sql.us TODO QUERY
+            q.construct_SendAllUsers_Query(ServerThread.sql.getAllUsers());
         } catch (Exception e) {
             q.construct_Control_Query("Error");
         }
@@ -115,7 +122,7 @@ public class ServerLogic {
     public static Query handle_showAllWorkersQuery(Query clientQuery){
         Query q = new Query();
         try {
-            // ServerThread.sql. TODO QUERY
+            q.construct_SendAllWorkers_Query(ServerThread.sql.getAllWorkers());
         } catch (Exception e) {
             q.construct_Control_Query("Error");
         }
@@ -155,7 +162,7 @@ public class ServerLogic {
     public static Query handle_editWorkerQuery(Query clientQuery){
         Query q = new Query();
         try {
-            // ServerThread.sql.worker TODO QUERY
+            ServerThread.sql.editWorker(clientQuery.getWorker());
             q.construct_Control_Query("Success");
         } catch (Exception e) {
             q.construct_Control_Query("Error");
