@@ -12,7 +12,6 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-    private static ClientThread mainThread;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -34,7 +33,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         
         //Creating the main Client thread prior to launching the GUI
-        mainThread = new ClientThread();
+        ClientThread mainThread = new ClientThread();
         mainThread.setDaemon(true);
         mainThread.start();
 

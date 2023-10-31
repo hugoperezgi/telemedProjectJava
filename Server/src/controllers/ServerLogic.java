@@ -26,6 +26,7 @@ public class ServerLogic {
 
     public static Query handle_sendReportQuery(Query clientQuery){
         Query q = new Query();
+        //TODO FUCK MY LIFE
         return q;
     }
 
