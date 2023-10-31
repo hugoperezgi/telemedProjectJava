@@ -283,6 +283,7 @@ public class Query implements Serializable {
      * <p>{@code 18} <b>Edit worker:</b> Cli -> Srv
      * <p>{@code 19} <b>Send all patients:</b> Srv -> Cli
      * <p>{@code 20} <b>Send all workers:</b> Srv -> Cli
+     * <p>{@code 21} <b>Get myself:</b> Cli -> Srv //TODO
 
     */
     public int getQueryType() {

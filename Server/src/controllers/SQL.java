@@ -72,7 +72,12 @@ public class SQL {
                     + " signs TEXT NOT NULL,"	//Signs and Symptoms			   
                     + " doct_comments TEXT,"	//Doctor edits
                     + " date DATE NOT NULL,"				   
-                    + " params LONGTEXT)";		//String with the params (Up to 4 294 967 295 characters) -> Maybe needs change
+                    + " param0 LONGTEXT,"				   
+                    + " param1 LONGTEXT,"				   
+                    + " param2 LONGTEXT,"				   
+                    + " param3 LONGTEXT,"				   
+                    + " param4 LONGTEXT,"				   
+                    + " param5 LONGTEXT)";		//String with the params (Up to 4 294 967 295 characters) -> Maybe needs change
         s4.executeUpdate(str4);                                       
         s4.close();        
 
@@ -214,13 +219,17 @@ public class SQL {
 		return lastId;
     }
 
-    public void addParametersToMedicalTest(Integer testID, String params) throws SQLException{
-        String str = "UPDATE medical_tests SET params = ? WHERE id = ?";
-        PreparedStatement p = c.prepareStatement(str);
-        p.setString(1, params);
-        p.setInt(2, testID);
-        p.executeUpdate();
-        p.close();
+    public void addParametersToMedicalTest(Integer testID, String[] params) throws SQLException{
+        String str;
+		PreparedStatement p;
+		for (int i = 0; i < params.length; i++) {
+			str = "UPDATE medical_tests SET param"+i+" = ? WHERE id = ?";
+			p = c.prepareStatement(str);
+			p.setString(1, params[i]);
+			p.setInt(2, testID);
+			p.executeUpdate();
+			p.close();
+		}
     }
 
     public void addCommentsToMedicalTest(Integer testID, String comments) throws SQLException{
@@ -231,7 +240,7 @@ public class SQL {
         p.executeUpdate();
         p.close();
     }
-
+	//Change this
 	public List<MedicalTest> searchMedicalTestByPatientID(Integer patientID) throws SQLException, Exception{
 		String str = "SELECT * FROM medical_tests WHERE patient_id = ?";
 		PreparedStatement p = c.prepareStatement(str);
@@ -239,7 +248,8 @@ public class SQL {
 		ResultSet rs = p.executeQuery();
 		List <MedicalTest> mList = new ArrayList<MedicalTest>();
 		while(rs.next()){
-			mList.add( new MedicalTest(rs.getInt("id"),rs.getInt("patient_id"), rs.getString("signs"), rs.getString("doct_comments"), rs.getDate("date"), rs.getString("params")));
+			String[] s = {rs.getString("param0"),rs.getString("param1"),rs.getString("param2"),rs.getString("param3"),rs.getString("param4"),rs.getString("param5")};
+			mList.add( new MedicalTest(rs.getInt("id"),rs.getInt("patient_id"), rs.getString("signs"), rs.getString("doct_comments"), rs.getDate("date"), s));
 		}
 		p.close();
 		rs.close();
@@ -407,6 +417,7 @@ public class SQL {
 			p.setString(1, patient.getName());
 			p.setInt(2, patient.getPatientID());
 			p.executeUpdate();	
+			p.close();
 		} 
 		if (patient.getSurname() != null) {
 			str = "UPDATE patients SET surname = ? WHERE patientID = ?";
@@ -414,6 +425,7 @@ public class SQL {
 			p.setString(1, patient.getSurname());
 			p.setInt(2, patient.getPatientID());
 			p.executeUpdate();
+			p.close();
 		}
 		if (patient.getGender() != null) {
 			str = "UPDATE patients SET gender = ? WHERE patientID = ?";
@@ -421,6 +433,7 @@ public class SQL {
 			p.setString(1, patient.getGender());
 			p.setInt(2, patient.getPatientID());
 			p.executeUpdate();	
+			p.close();
 		}
 		if (patient.getBloodType() != null) {
 			str = "UPDATE patients SET blood_type = ? WHERE patientID = ?";
@@ -428,6 +441,7 @@ public class SQL {
 			p.setString(1, patient.getBloodType());
 			p.setInt(2, patient.getPatientID());
 			p.executeUpdate();
+			p.close();
 		}
 		if (patient.getBirthDate() != null) {
 			str = "UPDATE patients SET birthdate = ? WHERE patientID = ?";
@@ -435,6 +449,7 @@ public class SQL {
 			p.setDate(1, patient.getBirthDate());
 			p.setInt(2, patient.getPatientID());
 			p.executeUpdate();
+			p.close();
 		}
 
 	}

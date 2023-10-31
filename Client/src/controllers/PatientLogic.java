@@ -1,5 +1,7 @@
 package controllers;
 
+import java.sql.Date;
+
 import bitalino.*;
 
 public class PatientLogic {
@@ -18,15 +20,15 @@ public class PatientLogic {
         try {
 
             BITalino biTalino = new BITalino();
-            int rs = 10;
-            biTalino.open(macAddrss, rs);
+            
+            int sr = 10;
+            biTalino.open(macAddrss, sr);
             
             biTalino.start(channels);
 
             Frame[] frame;
             int block_size=10;
             String[] parametersFromChannels= new String[6];
-            String s;
 
             for (int j = 0; j < 10000000; j++) {
 
@@ -77,8 +79,28 @@ public class PatientLogic {
         return ClientThread.getServerResponse().getControlMsg();
     }
 
-    public static Integer fuck2(){
-        ClientThread
+    /**
+     * Used to create a patient report. Returns the {@code reportId} of the report created.
+     * <p>Check return for possible errors:
+     * <p>{@code -1} - Error creating the report
+     * <p>{@code -2} - Server Error, unknown
+     */
+    public static Integer createReport(Integer patientId, String patientComments, Date date){
+        Query q = new Query();
+        q.construct_SendReport_Query(patientId, patientComments, date);
+        ClientThread.setClientQuery(q);
+        ClientThread.sendQuery();
+
+        Query serverResponse = ClientThread.getServerResponse();
+        if(serverResponse==null){return -2;}
+        String msg = serverResponse.getControlMsg();
+        if(msg.contains("Error")){
+            return -1;
+        }else{
+            String[] s=msg.split(":");
+            if(s.length!=2||!s[0].contains("Success")){return -2;}
+            return Integer.parseInt(s[1]);
+        }
     }
 
 
