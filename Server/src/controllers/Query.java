@@ -15,7 +15,7 @@ public class Query implements Serializable {
 
     private List<MedicalTest> medicalTest_List=null;
     private MedicalTest medicalTest=null;
-    private String paramString=null;
+    private String[] paramStrings=null;
     private Integer currentTest=null;
 
     private List<User> user_List=null; 
@@ -60,7 +60,7 @@ public class Query implements Serializable {
     public void construct_SendReport_Query(Integer patientId, String symptoms, Date date){
         this.queryType = (byte) 2;
         this.medicalTest = new MedicalTest(patientId, symptoms, date);
-        this.paramString=null;
+        this.paramStrings=null;
     }
 
     /**
@@ -68,10 +68,10 @@ public class Query implements Serializable {
      * Keep sending parameter data to server. Parameters = null when finished; expected control response once finished.
      * {@code Client -> Server} <p>
      */
-    public void construct_SendReport_Query(Integer testID, String parameters){
+    public void construct_SendReport_Query(Integer testID, String[] parameters){
         this.queryType = (byte) 2;
         this.currentTest=testID;
-        this.paramString=parameters;
+        this.paramStrings=parameters;
     }
 
     /**
@@ -339,8 +339,8 @@ public class Query implements Serializable {
      * <p> {@code 2} - Send Report
      * <p> If {@code return=null} then transmission has ended
      */
-    public String getParamString() {
-        return paramString;
+    public String[] getParamString() {
+        return paramStrings;
     }
     public List<MedicalTest> getMedicalTest_List() {
         return medicalTest_List;
