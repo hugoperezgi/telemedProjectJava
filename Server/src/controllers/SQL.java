@@ -204,7 +204,7 @@ public class SQL {
         p.close();	
     }
 
-	public int addMedicalTest(MedicalTest medtest) throws SQLException{
+	public Integer addMedicalTest(MedicalTest medtest) throws SQLException{
 		String str = "INSERT INTO medical_tests (patient_id, signs, date) VALUES (?, ?, ?)";
 		PreparedStatement p = c.prepareStatement(str);
 		p.setInt(1, medtest.getPatientID());

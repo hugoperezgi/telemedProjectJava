@@ -70,6 +70,7 @@ public class Query implements Serializable {
      */
     public void construct_SendReport_Query(Integer testID, String[] parameters){
         this.queryType = (byte) 2;
+        this.medicalTest=null;
         this.currentTest=testID;
         this.paramStrings=parameters;
     }
@@ -258,8 +259,30 @@ public class Query implements Serializable {
         this.worker_List=workers;
     } 
 
-
+    /**
+     * Constructor for Query Type 21 <b>Get myself</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_GetMyself_Query(){
+        this.queryType = (byte) 21;
+    } 
  
+    /**
+     * Constructor for Query Type 22 <b>Yourself</b> <p>
+     * {@code Server -> Client} <p>
+     */
+    public void construct_Yourself_Patient_Query(Patient p){
+        this.queryType = (byte) 22;
+        this.patient=p;
+    } 
+    /**
+     * Constructor for Query Type 22 <b>Yourself</b> <p>
+     * {@code Server -> Client} <p>
+     */
+    public void construct_Yourself_Worker_Query(Worker w){
+        this.queryType = (byte) 22;
+        this.worker=w;
+    } 
     
     /**Type of the query
      * <p>{@code 0} <b>Log in:</b> Cli -> Srv
@@ -283,8 +306,8 @@ public class Query implements Serializable {
      * <p>{@code 18} <b>Edit worker:</b> Cli -> Srv
      * <p>{@code 19} <b>Send all patients:</b> Srv -> Cli
      * <p>{@code 20} <b>Send all workers:</b> Srv -> Cli
-     * <p>{@code 21} <b>Get myself:</b> Cli -> Srv //TODO
-
+     * <p>{@code 21} <b>Get myself:</b> Cli -> Srv
+     * <p>{@code 22} <b>Yourself:</b> Srv -> Cli
     */
     public int getQueryType() {
         return queryType;
@@ -359,6 +382,7 @@ public class Query implements Serializable {
      * Valid for query types:
      * <p> {@code 15} - Create patient
      * <p> {@code 16} - Edit patient
+     * <p> {@code 21} - Get Myself
      */
     public Patient getPatient() {
         return patient;
@@ -375,6 +399,7 @@ public class Query implements Serializable {
      * Valid for query types:
      * <p> {@code 17} - Create worker
      * <p> {@code 18} - Edit worker
+     * <p> {@code 21} - Get Myself
      */
     public Worker getWorker() {
         return worker;

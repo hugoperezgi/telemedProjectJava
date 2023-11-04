@@ -24,9 +24,42 @@ public class ServerLogic {
         return q;
     }
 
-    public static Query handle_sendReportQuery(Query clientQuery){
+    public static Query handle_sendReportQuery(Query clientQuery, ClientHandler c){
         Query q = new Query();
-        //TODO FUCK MY LIFE
+        try {
+            MedicalTest t=clientQuery.getMedicalTest();
+            if(t==null){
+                String[] params=clientQuery.getParamString();
+                if(params==null){/*End data transmission + Return*/
+                    
+                    ServerThread.sql.addParametersToMedicalTest(clientQuery.getCurrentTest(), c.testParamsReceived);
+                    q.construct_Control_Query("Success");
+
+                } else {
+
+                    for (int i = 0; i < params.length; i++) {
+                        c.testParamsReceived[i]+=params[i];
+                    }
+
+                    //TODO check for RT listening UDP socks of doct and send stuff if required
+
+                    String s = "ACK";
+                    for (int i = 0; i < c.testParamsReceived.length; i++) {
+                        s+=(":"+c.testParamsReceived[i].length());
+                    }
+                        //Create the ACK for the received block
+                    q.construct_Control_Query(s);
+                        //Send the ACK to client
+                }
+
+            }else{
+                Integer i=ServerThread.sql.addMedicalTest(t);
+                c.testParamsReceived=new String[6];
+                q.construct_Control_Query("TestAdded:"+i);
+            }
+        } catch (Exception e) {
+            q.construct_Control_Query("Error");
+        }
         return q;
     }
 
@@ -179,6 +212,26 @@ public class ServerLogic {
         try {
             ServerThread.sql.editWorker(clientQuery.getWorker());
             q.construct_Control_Query("Success");
+        } catch (Exception e) {
+            q.construct_Control_Query("Error");
+        }
+        return q;
+    }
+
+    public static Query handle_GetMyself(ClientHandler c){
+        Query q = new Query();
+        try {
+            switch (c.role) {
+                case 1:
+                    q.construct_Yourself_Worker_Query(ServerThread.sql.selectWorkerByUserId(c.userID));
+                    break;
+                case 2:
+                    q.construct_Yourself_Patient_Query(ServerThread.sql.selectPatientByUserId(c.userID));
+                    break;
+                default: 
+                    q.construct_Control_Query("ADMIN");
+                    break;
+            }
         } catch (Exception e) {
             q.construct_Control_Query("Error");
         }

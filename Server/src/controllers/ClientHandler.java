@@ -12,6 +12,8 @@ public class ClientHandler extends Thread {
 
     public Integer userID=null;
     public Integer role=null;
+
+    public String[] testParamsReceived=null;
     
     public static boolean serverRunning=true;
     public static int currentConnectedUsers;
@@ -40,12 +42,12 @@ public class ClientHandler extends Thread {
 
                 }else{
                     //Process the query if data type is correct
-                    switch (clientQuery.getQueryType()) { //1 9 10 12 19 20
+                    switch (clientQuery.getQueryType()) { //1 9 10 12 19 20 21
                         case 0: // login
                             servQuery = ServerLogic.handle_logInQuery(clientQuery,this);
                             break;                
                         case 2: // Send Report
-                            servQuery = ServerLogic.handle_sendReportQuery(clientQuery);
+                            servQuery = ServerLogic.handle_sendReportQuery(clientQuery,this);
                             break;                
                         case 3: // Create User
                             servQuery = ServerLogic.handle_createUserQuery(clientQuery);
@@ -85,6 +87,9 @@ public class ClientHandler extends Thread {
                             break;                
                         case 18: // Edit worker
                             servQuery = ServerLogic.handle_editWorkerQuery(clientQuery);
+                            break;                
+                        case 21: // Get myself
+                            servQuery = ServerLogic.handle_GetMyself(this);
                             break;                
                         default: // Not a valid Client query type
                             servQuery = ServerLogic.notAValidQueryType();
