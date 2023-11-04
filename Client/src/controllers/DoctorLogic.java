@@ -7,9 +7,9 @@ import entities.*;
 public class DoctorLogic {
     //Check RT params
 
-    public static List<Patient> showMyPatients(){
+    public static List<Patient> showMyPatients(Integer workerId){
         Query q = new Query();
-        //show my patients ffs TODO
+        q.construct_ShowMyPatients_Query(workerId);
         ClientThread.setClientQuery(q);
         ClientThread.sendQuery();
 

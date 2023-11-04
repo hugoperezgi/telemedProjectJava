@@ -283,6 +283,14 @@ public class Query implements Serializable {
         this.queryType = (byte) 22;
         this.worker=w;
     } 
+
+    /**
+     * Constructor for Query Type 23 <b>Get my patients</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_ShowMyPatients_Query(Integer workerid){
+        this.queryType = (byte) 23;
+    }
     
     /**Type of the query
      * <p>{@code 0} <b>Log in:</b> Cli -> Srv
