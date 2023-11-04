@@ -132,11 +132,10 @@ public class PatientLogic {
         ClientThread.sendQuery();
 
         Query srvResponse = ClientThread.getServerResponse();
-        Patient p =null;
         if (srvResponse.getQueryType()==22) {
-            p = srvResponse.getPatient();
+            return srvResponse.getPatient();
         }
-        return p;        
+        return null;        
     }
 
     /** return 0 if edit was successful, -1 if something went wrong */
