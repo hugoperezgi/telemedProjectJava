@@ -12,7 +12,7 @@ public class PatientLogic {
 
     /**
      * Used to connect and send data from a bitalino device to the server. <p>
-     * @param channels - int array with the analog channels to be received, Must be on order {0,1,2,3,4,5}
+     * @param channels - int array with the analog channels to be received, {0,1,2,3,4,5}
      * @return Return codes:
      * <p>{@code -1} - Bitalino error //TODO actually filter the error codes
      * <p>{@code -2} - ?

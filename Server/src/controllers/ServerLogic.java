@@ -102,8 +102,8 @@ public class ServerLogic {
         Query q = new Query();
         try {
             if(ServerThread.sql.isUserNameFree(clientQuery.getUser().getUsername())){
-                ServerThread.sql.addUser(clientQuery.getUser());
-                q.construct_Control_Query("Success");
+                Integer userId=ServerThread.sql.addUser(clientQuery.getUser());
+                q.construct_Control_Query("Success:"+userId);
             }else{
                 q.construct_Control_Query("UsernameTaken");
             }
@@ -247,8 +247,8 @@ public class ServerLogic {
     public static Query handle_createPatientQuery(Query clientQuery){
         Query q = new Query();
         try {
-            Patient p = clientQuery.getPatient();
-            ServerThread.sql.addPatient(p);
+            ServerThread.sql.addPatient(clientQuery.getPatient());
+            q.construct_Control_Query("Success");
         } catch (Exception e) {
             q.construct_Control_Query("Error");
         }

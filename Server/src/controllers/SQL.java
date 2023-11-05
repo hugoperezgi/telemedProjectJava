@@ -116,7 +116,7 @@ public class SQL {
 		System.out.println("Database setup.");		
     }                
 	
-	public void addUser(User u) throws SQLException{
+	public Integer addUser(User u) throws SQLException{
         String str = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
         PreparedStatement prepS = c.prepareStatement(str);
         prepS.setString(1, u.getUsername());
@@ -124,6 +124,7 @@ public class SQL {
         prepS.setInt(3, u.getRole());
         prepS.executeUpdate();
         prepS.close();
+		return this.checkPassword(u.getUsername(), u.getPasswordHash()).getUserID();
 	}
 
 	public List<User> getAllUsers() throws SQLException{ 
