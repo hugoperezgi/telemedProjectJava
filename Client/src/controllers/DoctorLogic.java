@@ -55,10 +55,10 @@ public class DoctorLogic {
     /** <b>Returns:</b> <p>{@code 0} if you're an stalker <p>{@code -1} if something went wrong */
     public static int showRTparams(Integer patientUserId){
         Query q = new Query();
-        fml fuck = new fml();
-        q.construct_CheckRealTime_Query(patientUserId,(InetSocketAddress) fml.setUpParamsSCK());
-        fuck.setDaemon(true);
-        fuck.start();
+        StalkerSocket ssck = new StalkerSocket();
+        q.construct_CheckRealTime_Query(patientUserId,(InetSocketAddress) StalkerSocket.setUpParamsSCK());
+        ssck.setDaemon(true);
+        ssck.start();
         ClientThread.setClientQuery(q);
         ClientThread.sendQuery();
 

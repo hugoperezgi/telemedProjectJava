@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.net.SocketAddress;
 import java.nio.channels.ServerSocketChannel;
 
-public class fml extends Thread{
+public class StalkerSocket extends Thread{
 
     private static ServerSocketChannel paramSCK=null;
     private static ObjectInputStream param_ois;
@@ -50,35 +50,13 @@ public class fml extends Thread{
         }
     }
 
-    /**
-     * Returns: 
-     * <p>{@code null} if connection was closed by server (AKA finished transmission)
-     * <p>{@code null} if something went wrong
-     * <p>{@code Query} - with the params
-     */
-    public static Query getRTParamQuery(){
-        if(param_ois!=null){
-            try {
-                return (Query) param_ois.readObject();
-            } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return null;
-        }else{
-            return null;
-        }
-    }
 
     private static void party(){
         while(running){
             Query q;
             try {
                 q = (Query)param_ois.readObject();
-                if(q.getQueryType()==2){
+                if(q.getQueryType()==12){
                     paramStrings = q.getParamString();
                 }else{
                     running=false;
@@ -95,8 +73,8 @@ public class fml extends Thread{
         }
     }
 
-    public fml(){
-        fml.running=true;
+    public StalkerSocket(){
+        StalkerSocket.running=true;
     }
 
     @Override
