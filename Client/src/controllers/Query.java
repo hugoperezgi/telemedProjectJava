@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.Serializable;
+import java.net.InetSocketAddress;
 import java.sql.Date;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class Query implements Serializable {
     private List<Worker> worker_List=null; 
     private Worker worker=null;
 
+    private InetSocketAddress ipAddrss=null;
         
     Query(){}
 
@@ -167,12 +169,13 @@ public class Query implements Serializable {
 
     /**
      * Constructor for Query Type 11 <b>Check Real time</b> <p>
-     * Ask server to send you the parameters uploaded by {@code patientId} <p>
+     * Ask server to send the parameters uploaded by {@code userIdOfPatient} to {@code ip} <p>
      * {@code Client -> Server} <p>
      */
-    public void construct_CheckRealTime_Query(Integer patientId){
+    public void construct_CheckRealTime_Query(Integer userIdOfPatient, InetSocketAddress ip){
         this.queryType = (byte) 11;
-        this.checkPatient=patientId;
+        this.checkPatient=userIdOfPatient;
+        this.ipAddrss=ip;
     } 
 
     /**
@@ -180,9 +183,9 @@ public class Query implements Serializable {
      * Response to query 11 of client. Will keep sending till patient is finished.<p>
      * {@code Server -> Client} <p>
      */
-    public void construct_SendParamsRT_Query(String params){
+    public void construct_SendParamsRT_Query(String[] params){
         this.queryType = (byte) 12;
-
+        this.paramStrings=params;
     } 
 
     /**
@@ -316,6 +319,7 @@ public class Query implements Serializable {
      * <p>{@code 20} <b>Send all workers:</b> Srv -> Cli
      * <p>{@code 21} <b>Get myself:</b> Cli -> Srv
      * <p>{@code 22} <b>Yourself:</b> Srv -> Cli
+     * <p>{@code 23} <b>Get my patients:</b> Cli -> Srv
     */
     public int getQueryType() {
         return queryType;
@@ -326,14 +330,14 @@ public class Query implements Serializable {
      * <p> {@code 7} - Send all tests of this patient
      * <p> {@code 11} - Send RT info of this patient
      */
-    public int getPatientID(){
+    public Integer getPatientID(){
         return checkPatient;
     }
 
     /**
      * Retrieve the testID to send parameters if client choses to do so
      */
-    public int getCurrentTest(){
+    public Integer getCurrentTest(){
         return currentTest;
     }
 
@@ -413,4 +417,7 @@ public class Query implements Serializable {
         return worker;
     }
 
+    public InetSocketAddress getIpAddrss() {
+        return ipAddrss;
+    }
 }

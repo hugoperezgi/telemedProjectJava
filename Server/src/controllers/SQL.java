@@ -3,6 +3,7 @@ package controllers;
 import java.rmi.NotBoundException;
 import java.security.spec.KeySpec;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,10 +82,34 @@ public class SQL {
         s4.executeUpdate(str4);                                       
         s4.close();        
 
+		User p=null,w=null;
+
 		try {
 			this.addUser(new User("admin", hashPassword("admin"), 0));
 		} catch (Exception e) {
 			System.out.println("Something went wrong while creating the admin");
+			e.printStackTrace();
+		}
+		try {
+			this.addUser(new User("doctor", hashPassword("doctor"), 1));
+			 w=this.checkPassword("doctor", hashPassword("doctor"));
+			this.addWorker(new Worker(w.getUserID(), "name", "surname"));
+		} catch (Exception e) {
+			System.out.println("Something went wrong while creating the doctor");
+			e.printStackTrace();
+		}
+		try {
+			this.addUser(new User("patient", hashPassword("patient"), 2));
+			 p=this.checkPassword("patient", hashPassword("patient"));
+			this.addPatient(new Patient(p.getUserID(), 0, "name", "surname", "0-", "Male", java.sql.Date.valueOf(LocalDate.now())));
+		} catch (Exception e) {
+			System.out.println("Something went wrong while creating the patient");
+			e.printStackTrace();
+		}
+		try {
+			this.createLinkDoctorPatient(this.selectPatientByUserId(p.getUserID()).getPatientID(), this.selectWorkerByUserId(w.getUserID()).getWorkerID());
+		} catch (Exception e) {
+			System.out.println("Something went wrong while creating the patient");
 			e.printStackTrace();
 		}
 
@@ -181,15 +206,14 @@ public class SQL {
 	}	
 
     public void addPatient(Patient p) throws SQLException{
-        String str = "INSERT INTO patients ( patientID, name, surname, gender, birthdate, blood_type, userId) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String str = "INSERT INTO patients (name, surname, gender, birthdate, blood_type, userId) VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement prepS = c.prepareStatement(str);
-        prepS.setInt(1, p.getPatientID());
-        prepS.setString(2, p.getName());
-        prepS.setString(3, p.getSurname());
-        prepS.setString(4, p.getGender());
-        prepS.setDate(5, p.getBirthDate());
-        prepS.setString(7, p.getBloodType());
-        prepS.setInt(8, p.getUserID());
+        prepS.setString(1, p.getName());
+        prepS.setString(2, p.getSurname());
+        prepS.setString(3, p.getGender());
+        prepS.setDate(4, p.getBirthDate());
+        prepS.setString(5, p.getBloodType());
+        prepS.setInt(6, p.getUserID());
         prepS.executeUpdate();
         prepS.close();
     }
@@ -283,10 +307,10 @@ public class SQL {
 	}
 	
 	
-	public List<Patient> searchPatientByDoctor(Integer workerId) throws SQLException, NotBoundException {
-		String str ="SELECT * FROM patients AS p JOIN doctor_patient AS dp ON p.patientID=dp.patient_id JOIN workers AS w ON w.workerId=dp.doctor_id WHERE w.workerId = ?";
+	public List<Patient> searchPatientByDoctor(Integer userId) throws SQLException, NotBoundException {
+		String str ="SELECT * FROM patients AS p JOIN doctor_patient AS dp ON p.patientID=dp.patient_id JOIN workers AS w ON w.workerId=dp.doctor_id WHERE w.userId = ?";
 		PreparedStatement p = c.prepareStatement(str);
-		p.setInt(1,workerId);
+		p.setInt(1,userId);
 		ResultSet rs = p.executeQuery();
 		List <Patient> pList = new ArrayList<Patient>();
 		while(rs.next()){

@@ -31,7 +31,6 @@ public class ClientThread extends Thread{
         runClient();
     }
 
-
     private void setup(){
         try {
             sck = SocketChannel.open(new InetSocketAddress("127.0.0.1", 50500));
@@ -84,14 +83,14 @@ public class ClientThread extends Thread{
     }
 
     /**
-     * Load the client query that you want to send
-     */
+     * Get the server response to the query sent
+     */    
     public static Query getServerResponse() {
         return serverResponse;
     }
 
     /**
-     * Get the server response to the query sent
+     * Load the client query that you want to send
      */
     public static void setClientQuery(Query clientQuery) {
         ClientThread.clientQuery = clientQuery;

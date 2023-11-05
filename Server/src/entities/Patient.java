@@ -155,4 +155,13 @@ public class Patient implements Serializable {
     public void setUserID(Integer userID) {
         this.userID = userID;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Patient p = (Patient) obj;
+        if( (this.patientID==p.patientID) || (this.userID==p.userID) ){
+            return true;
+        }
+        return false;
+    }
 }

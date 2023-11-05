@@ -138,7 +138,7 @@ public class PatientLogic {
         return null;        
     }
 
-    /** return 0 if edit was successful, -1 if something went wrong */
+    /** <b>Returns:</b> <p>{@code 0} if edit was successful <p>{@code -1} if something went wrong */
     public static int editMyself(Patient p){
         Query q = new Query();
         q.construct_EditPatient_Query(p);
@@ -152,6 +152,23 @@ public class PatientLogic {
         return -1;
     }
 
+    /** <b>Returns:</b> <p>{@code 0} if edit was successful <p>{@code -1} if username is already taken <p>{@code -2} if something went wrong */
+    public static int editLogin(Integer userId, String user, byte[] psw){
+        Query q = new Query();
+        q.construct_EditUser_Query(userId, user, psw);
+        ClientThread.setClientQuery(q);
+        ClientThread.sendQuery();
+
+        Query srvResponse=ClientThread.getServerResponse();
+        if(srvResponse.getControlMsg().contains("Success")){
+            return 0;
+        }else if(srvResponse.getControlMsg().contains("UsernameTaken")) {
+            return -1;
+        }
+        return -2;
+    }
+
+    /** <b>Returns:</b> <p>{@code List<MedicalTest>} if query was successful <p>{@code null} if something went wrong */
     public static List<MedicalTest> checkMyReports(Integer patientID){
         Query q = new Query();
         q.construct_ShowClinical_Query(patientID);

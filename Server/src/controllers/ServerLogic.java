@@ -1,5 +1,7 @@
 package controllers;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import entities.*;
@@ -26,28 +28,60 @@ public class ServerLogic {
 
     public static Query handle_sendReportQuery(Query clientQuery, ClientHandler c){
         Query q = new Query();
+        Query q2= new Query();
         try {
             MedicalTest t=clientQuery.getMedicalTest();
             if(t==null){
                 String[] params=clientQuery.getParamString();
+                
+                c.receivingDataFromPatient(); 
+                    //Adds this thread "c" to the "Transmitting Clients List" so that other threads
+                    //(doctor threads) can add their sck to a public list that is then used to send them
+                    //the parameters as they're received from patient (in near-RT)
+
                 if(params==null){/*End data transmission + Return*/
                     
                     ServerThread.sql.addParametersToMedicalTest(clientQuery.getCurrentTest(), c.testParamsReceived);
                     q.construct_Control_Query("Success");
 
+                    List<ObjectOutputStream> stalkerList = c.getStalkingDoctors();
+                    for (ObjectOutputStream stalker : stalkerList) {
+                        try{stalker.close();}catch(Exception e){}
+                    }
+                        //Close all sockets connected to stalking doctors
+
+                    c.dataTransmissionEnded(); 
+                        //Remove the client thread from the list of receiving params list + clear stalker list
+
                 } else {
 
+                    //Store the received data
                     for (int i = 0; i < params.length; i++) {
                         c.testParamsReceived[i]+=params[i];
                     }
 
-                    //TODO check for RT listening UDP socks of doct and send stuff if required
+                    //Send all received data to the Stalking doctors
+                    List<ObjectOutputStream> stalkerList = c.getStalkingDoctors();
+                    q2.construct_SendParamsRT_Query(c.testParamsReceived);
+                    if(!stalkerList.isEmpty()){
+                        for (ObjectOutputStream stalker : stalkerList) {
+                            try {
+                                stalker.writeObject(q2);
+                            } catch (IOException e) {
+                                try {
+                                    stalkerList.remove(stalker);
+                                    stalker.close();
+                                } catch (Exception e2) {}
+                            }
+                        }
+                    }
 
+                    //Create the ACK for the received block
                     String s = "ACK";
                     for (int i = 0; i < c.testParamsReceived.length; i++) {
                         s+=(":"+c.testParamsReceived[i].length());
                     }
-                        //Create the ACK for the received block
+
                     q.construct_Control_Query(s);
                         //Send the ACK to client
                 }
@@ -59,6 +93,7 @@ public class ServerLogic {
             }
         } catch (Exception e) {
             q.construct_Control_Query("Error");
+            c.dataTransmissionEnded(); //Remove the client thread from the list of receiving params list
         }
         return q;
     }
@@ -66,7 +101,7 @@ public class ServerLogic {
     public static Query handle_createUserQuery(Query clientQuery){
         Query q = new Query();
         try {
-            if(ServerThread.sql.isUserNameFree(null)){
+            if(ServerThread.sql.isUserNameFree(clientQuery.getUser().getUsername())){
                 ServerThread.sql.addUser(clientQuery.getUser());
                 q.construct_Control_Query("Success");
             }else{
@@ -82,7 +117,7 @@ public class ServerLogic {
         Query q = new Query();
         try {
             if(clientQuery.getUser().getUsername()!=null){
-                if(ServerThread.sql.isUserNameFree(null)){
+                if(ServerThread.sql.isUserNameFree(clientQuery.getUser().getUsername())){
                     ServerThread.sql.changeUserName(clientQuery.getUser().getUserID(), clientQuery.getUser().getUsername());
                 }else{
                     q.construct_Control_Query("UsernameTaken");
@@ -143,10 +178,46 @@ public class ServerLogic {
         return q;
     }
 
-    public static Query handle_checkRealTimeQuery(Query clientQuery){ //TODO fml
+    public static Query handle_checkRealTimeQuery(Query clientQuery,ClientHandler c){ 
         Query q = new Query();
-        try {
-            // ServerThread.sql.
+        try { 
+            if(clientQuery.getPatientID()==null){//Send the doctor which of their patients are sending params.
+
+                List<ClientHandler> sendingPatients=c.getTransmittingPatients();
+                // ServerThread.sql.searchPatientByDoctor(ServerThread.sql.selectWorkerByUserId(c.userID).getWorkerID());
+                List<Patient> pList=ServerThread.sql.searchPatientByDoctor(c.userID);
+                Boolean remove = true;
+                for (Patient patient : pList) {
+                    for (ClientHandler cThread : sendingPatients) {
+                        if(cThread.userID==patient.getUserID()){
+                            remove=false;
+                        }
+                    }
+                    if(remove){
+                        pList.remove(patient);
+                    }else{
+                        remove=true;
+                    }
+                }
+
+                if(pList.isEmpty()){
+                    q.construct_Control_Query("NoTarget");
+                }else{
+                    q.construct_SendAllPatients_Query(pList);
+                }
+
+            }else{ //Doctor chose a patient that is sending data
+
+                List<ClientHandler> sendingPatients=c.getTransmittingPatients();
+                for (ClientHandler clientHandler : sendingPatients) {
+                    if(clientHandler.userID==clientQuery.getPatientID()){
+                        clientHandler.addIptoStalkers(clientQuery.getIpAddrss());
+                        q.construct_Control_Query("AddedToStalkers");
+                        return q;
+                    }
+                }
+            }
+
         } catch (Exception e) {
             q.construct_Control_Query("Error");
         }
@@ -238,15 +309,25 @@ public class ServerLogic {
         return q;
     }
 
-    public static Query notAValidQueryType(){
+    public static Query handle_ShowMyPatients(ClientHandler c){
         Query q = new Query();
-        q.construct_Control_Query("Wrong query format");
+        try {
+            q.construct_SendAllPatients_Query(ServerThread.sql.searchPatientByDoctor(c.userID));
+        } catch (Exception e) {
+            q.construct_Control_Query("Error");
+        }
+        return q;
+    }
+
+    public static Query forbiddenAccess(){
+        Query q = new Query();
+        q.construct_Control_Query("forbiddenAccess");
         return q;
     }
 
     public static Query notAValidQueryFormat(){
         Query q = new Query();
-        q.construct_Control_Query("Not a valid query type");
+        q.construct_Control_Query("Wrong query format");
         return q;
     }
 
