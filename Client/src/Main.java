@@ -15,14 +15,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/servergui.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/LoginController.fxml"));
 		Parent root = loader.load();
 
-        // ServerGUIController servControl = loader.getController();
-		// servControl.setMainThread(mainThread);
+        LoginController cliUI = loader.getController();
+		// cliUI.setMainThread(mainThread);
 
-        // Image windowIcon = new Image("img/logo.png");
-        // primaryStage.getIcons().add(windowIcon);	
+        Image windowIcon = new Image("img/logo.png");
+        primaryStage.getIcons().add(windowIcon);	
 
         primaryStage.setTitle("Server"); 
         primaryStage.setResizable(false);
