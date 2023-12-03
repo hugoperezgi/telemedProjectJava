@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 
@@ -91,13 +92,12 @@ public class PatientLogic {
 
     }
 
-    private static String sendReportParameters(Integer testID, String[] params){
+    private static String sendReportParameters(Integer testID, String[] params) throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_SendReport_Query(testID, params); 
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+            ClientLogic.sendQuery(q);
 
-        return ClientThread.getServerResponse().getControlMsg();
+        return ClientLogic.getServerResponse().getControlMsg();
     }
 
     /**
@@ -105,14 +105,15 @@ public class PatientLogic {
      * <p>Check return for possible errors:
      * <p>{@code -1} - Error creating the report
      * <p>{@code -2} - Server Error, unknown
+     * @throws IOException
+     * @throws ClassNotFoundException
      */
-    public static Integer createReport(Integer patientId, String patientComments, Date date){
+    public static Integer createReport(Integer patientId, String patientComments, Date date) throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_SendReport_Query(patientId, patientComments, date);
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+            ClientLogic.sendQuery(q);
 
-        Query serverResponse = ClientThread.getServerResponse();
+        Query serverResponse = ClientLogic.getServerResponse();
         if(serverResponse==null){return -2;}
         String msg = serverResponse.getControlMsg();
         if(msg.contains("Error")){
@@ -124,42 +125,48 @@ public class PatientLogic {
         }
     }
 
-    /**Returns the patientID of the current user*/
-    public static Patient getMyself(){
+    /**Returns the patientID of the current user
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * */
+    public static Patient getMyself() throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_GetMyself_Query();
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+            ClientLogic.sendQuery(q);
 
-        Query srvResponse = ClientThread.getServerResponse();
+        Query srvResponse = ClientLogic.getServerResponse();
         if (srvResponse.getQueryType()==22) {
             return srvResponse.getPatient();
         }
         return null;        
     }
 
-    /** <b>Returns:</b> <p>{@code 0} if edit was successful <p>{@code -1} if something went wrong */
-    public static int editMyself(Patient p){
+    /** <b>Returns:</b> <p>{@code 0} if edit was successful <p>{@code -1} if something went wrong 
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * */
+    public static int editMyself(Patient p) throws IOException, ClassNotFoundException{
         Query q = new Query();
         q.construct_EditPatient_Query(p);
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+            ClientLogic.sendQuery(q);
 
-        Query srvResponse=ClientThread.getServerResponse();
+        Query srvResponse=ClientLogic.getServerResponse();
         if(srvResponse.getControlMsg().contains("Success")){
             return 0;
         }
         return -1;
     }
 
-    /** <b>Returns:</b> <p>{@code 0} if edit was successful <p>{@code -1} if username is already taken <p>{@code -2} if something went wrong */
-    public static int editLogin(Integer userId, String user, byte[] psw){
+    /** <b>Returns:</b> <p>{@code 0} if edit was successful <p>{@code -1} if username is already taken <p>{@code -2} if something went wrong 
+     * @throws IOException
+     * @throws ClassNotFoundException 
+     **/
+    public static int editLogin(Integer userId, String user, byte[] psw) throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_EditUser_Query(userId, user, psw);
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+            ClientLogic.sendQuery(q);
 
-        Query srvResponse=ClientThread.getServerResponse();
+        Query srvResponse=ClientLogic.getServerResponse();
         if(srvResponse.getControlMsg().contains("Success")){
             return 0;
         }else if(srvResponse.getControlMsg().contains("UsernameTaken")) {
@@ -168,15 +175,19 @@ public class PatientLogic {
         return -2;
     }
 
-    /** <b>Returns:</b> <p>{@code List<MedicalTest>} if query was successful <p>{@code null} if something went wrong */
-    public static List<MedicalTest> checkMyReports(Integer patientID){
+    /** <b>Returns:</b> <p>{@code List<MedicalTest>} if query was successful <p>{@code null} if something went wrong 
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * */
+    public static List<MedicalTest> checkMyReports(Integer patientID) throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_ShowClinical_Query(patientID);
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+            ClientLogic.sendQuery(q);
 
-        Query srvResponse = ClientThread.getServerResponse();
-        if(srvResponse.getQueryType()!=10){
+        Query srvResponse = ClientLogic.getServerResponse();
+        if(srvResponse==null){
+            return null;
+        }else if(srvResponse.getQueryType()!=10){
             return null;
         }else{
             return srvResponse.getMedicalTest_List();

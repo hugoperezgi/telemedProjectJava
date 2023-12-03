@@ -234,16 +234,16 @@ public class Query implements Serializable {
     } 
     
     /**
-     * Constructor for Query Type 18 <b>Create Patient</b> <p>
+     * Constructor for Query Type 18 <b>Edit Worker</b> <p>
      * {@code Client -> Server} <p>
      */
-    public void construct_EditWorker_Query(Integer userID, String name, String surname){
+    public void construct_EditWorker_Query(Integer workerId, String name, String surname){
         this.queryType = (byte) 18;
-        this.worker=new Worker(userID, name, surname);
+        this.worker=new Worker(workerId,null, name, surname);
     } 
 
     /**
-     * Constructor for Query Type 19 <b>Create Patient</b> <p>
+     * Constructor for Query Type 19 <b>Get all patients</b> <p>
      * Response to query 6 of client.<p>
      * {@code Server -> Client} <p>
      */
@@ -254,7 +254,7 @@ public class Query implements Serializable {
 
 
     /**
-     * Constructor for Query Type 20 <b>Create Patient</b> <p>
+     * Constructor for Query Type 20 <b>Get all workers</b> <p>
      * {@code Server -> Client} <p>
      */
     public void construct_SendAllWorkers_Query(List<Worker> workers){
@@ -294,6 +294,34 @@ public class Query implements Serializable {
     public void construct_ShowMyPatients_Query(Integer workerid){
         this.queryType = (byte) 23;
     }
+
+    /**
+     * Constructor for Query Type 24 <b>Get my patients</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_GetDoctor_Query(Integer userId){
+        this.checkPatient=userId;
+        this.queryType = (byte) 24;
+    }
+
+    /**
+     * Constructor for Query Type 25 <b>Get my patients</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_GetPatient_Query(Integer userId){
+        this.checkPatient=userId;
+        this.queryType = (byte) 25;
+    }
+
+    /**
+     * Constructor for Query Type 26 <b>Link patient and doct</b> <p>
+     * {@code Client -> Server} <p>
+     */
+    public void construct_CreateLink_Query(Integer patientId, Integer doctorId){
+        this.checkPatient=patientId;
+        this.userIdToDelete=doctorId;
+        this.queryType = (byte) 26;
+    }
     
     /**Type of the query
      * <p>{@code 0} <b>Log in:</b> Cli -> Srv
@@ -320,6 +348,9 @@ public class Query implements Serializable {
      * <p>{@code 21} <b>Get myself:</b> Cli -> Srv
      * <p>{@code 22} <b>Yourself:</b> Srv -> Cli
      * <p>{@code 23} <b>Get my patients:</b> Cli -> Srv
+     * <p>{@code 24} <b>Get doctor by userId</b> Cli -> Srv
+     * <p>{@code 25} <b>Get patient by userId</b> Cli -> Srv
+     * <p>{@code 26} <b>Link patient and doct</b> Cli -> Srv
     */
     public int getQueryType() {
         return queryType;

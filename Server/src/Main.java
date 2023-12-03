@@ -22,8 +22,8 @@ public class Main extends Application {
         ServerGUIController servControl = loader.getController();
 		servControl.setMainThread(mainThread);
 
-        // Image windowIcon = new Image("img/logo.png");
-        // primaryStage.getIcons().add(windowIcon);	
+        Image windowIcon = new Image("img/healthcare.png");
+        primaryStage.getIcons().add(windowIcon);	
 
         primaryStage.setTitle("Server"); 
         primaryStage.setResizable(false);
@@ -44,3 +44,4 @@ public class Main extends Application {
     }
     
 }
+//Fuck Java.

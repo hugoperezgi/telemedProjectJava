@@ -1,5 +1,10 @@
 package controllers;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
+import java.nio.channels.SocketChannel;
 import java.security.spec.KeySpec;
 
 import javax.crypto.SecretKeyFactory;
@@ -7,6 +12,7 @@ import javax.crypto.spec.PBEKeySpec;
 
 public class ClientLogic {
     
+    private static Query serverResponse;
 
     /**
      * Used to log in into the server, requires username + password <p>
@@ -23,9 +29,8 @@ public class ClientLogic {
         try {
             Query q = new Query();
             q.construct_LogIn_Query(user, hashPassword(password));
-            ClientThread.setClientQuery(q);
-            ClientThread.sendQuery();
-            Query serverResponse = ClientThread.getServerResponse();
+            sendQuery(q);
+            serverResponse = getServerResponse();
 
             if(serverResponse!=null){
 
@@ -50,11 +55,43 @@ public class ClientLogic {
         return -3;
     }
 
-	private static byte[] hashPassword(String psw) throws Exception{
+	public static byte[] hashPassword(String psw) throws Exception{
         byte[] s = {(byte) 0, (byte) 1};
         KeySpec k = new PBEKeySpec(psw.toCharArray(), s, 65353, 256);
         SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         return f.generateSecret(k).getEncoded();
     }  
 
+    private static ObjectOutputStream oos;
+    private static ObjectInputStream ois;
+    private static SocketChannel sck;
+
+        public static void setup(){
+            try {
+                sck = SocketChannel.open(new InetSocketAddress("127.0.0.1", 50500));
+
+                oos = new ObjectOutputStream(sck.socket().getOutputStream());
+                ois = new ObjectInputStream(sck.socket().getInputStream());
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
+        }
+    
+        public static void sendQuery(Query clientQuery) throws IOException {
+            oos.writeObject(clientQuery);
+        }
+
+        public static Query getServerResponse() throws ClassNotFoundException, IOException {
+            return (Query) ois.readObject();
+        }
+        
+        public static void closeAll(){
+            try {
+                sck.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
 }

@@ -16,7 +16,7 @@ public class ClientHandler extends Thread {
 
     //Info about the user that this thread is handling
     public Integer userID=null;
-    public Integer role=null;
+    public Integer role=-1;
 
     //String with all the data that has been received from a patient when 
     //performing a test 
@@ -143,6 +143,15 @@ public class ClientHandler extends Thread {
                                     break;                
                                 case 18: // Edit worker
                                     servQuery = ServerLogic.handle_editWorkerQuery(clientQuery);//ADMIN, WORKER
+                                    break;                
+                                case 24: // Get doctor by userId
+                                    servQuery = ServerLogic.handle_getDoctor(clientQuery);//ADMIN, WORKER
+                                    break;                
+                                case 25: // Get patient by userId
+                                    servQuery = ServerLogic.handle_getPatient(clientQuery);//ADMIN, WORKER
+                                    break;                
+                                case 26: // Create Link
+                                    servQuery = ServerLogic.handle_createLink(clientQuery);//ADMIN, WORKER
                                     break;                
                                 default: // Not a valid Client query type
                                     servQuery = ServerLogic.forbiddenAccess();

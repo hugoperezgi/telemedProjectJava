@@ -27,6 +27,21 @@ public class Patient implements Serializable {
         this.name=name;
         this.surname=surname;
         this.birthDate=bdate;
+        this.bloodTypeAndGender=0b00000000;
+        this.setBloodType(bloodtype);
+        this.setGender(gender);
+    }
+
+    /**
+     * DO NOT USE FOR PATIENT EDIT.
+     */    
+    public Patient(Integer userid, String name, String surname, String bloodtype, String gender, Date bdate){
+        this.userID=userid;
+        this.patientID=null;
+        this.name=name;
+        this.surname=surname;
+        this.birthDate=bdate;
+        this.bloodTypeAndGender=0b00000000;
         this.setBloodType(bloodtype);
         this.setGender(gender);
     }
@@ -36,6 +51,9 @@ public class Patient implements Serializable {
      */
     public Patient(Integer patientid){
         this.patientID=patientid;
+        this.name=null;
+        this.surname=null;
+        this.birthDate=null;
         this.bloodTypeAndGender=0b00000010;
     }
 
@@ -47,6 +65,8 @@ public class Patient implements Serializable {
      * <p>{@code A+} Bloodtype A+
      * <p>{@code B-} Bloodtype B-
      * <p>{@code B+} Bloodtype B+
+     * <p>{@code B+} Bloodtype AB-
+     * <p>{@code B+} Bloodtype AB+
      */
     public void setBloodType(String type){
         this.bloodTypeAndGender&=0b00000011;
@@ -69,13 +89,19 @@ public class Patient implements Serializable {
             case "B+": //B+
                 this.bloodTypeAndGender|=0b00010100;
                 break;
+            case "AB-": //AB-
+                this.bloodTypeAndGender|=0b00010100;
+                break;
+            case "AB+": //B+
+                this.bloodTypeAndGender|=0b00010100;
+                break;
             default:break;
         }
     }
 
     public String getBloodType() {
         byte temp = this.bloodTypeAndGender;
-        temp&=0b01110100;
+        temp&=0b01111100;
         switch (temp) {
             case 0b01000000: return "0-";
             case 0b01000100: return "0+";
@@ -83,6 +109,8 @@ public class Patient implements Serializable {
             case 0b00100100: return "A+";
             case 0b00010000: return "B-";
             case 0b00010100: return "B+";
+            case 0b00001000: return "AB-";
+            case 0b00001100: return "AB+";
             default: return null;
         }
     }
@@ -94,9 +122,9 @@ public class Patient implements Serializable {
      * <p>{@code Male}
      */
     public void setGender(String gender){
-        if(gender=="Male"){
+        if(gender.contains("Male")){
             this.bloodTypeAndGender|=0b00000001;
-        } else if (gender=="Female") {
+        } else if (gender.contains("Female")) {
             this.bloodTypeAndGender&=0b11111100;
         } else {
             this.bloodTypeAndGender&=0b11111100;
@@ -154,5 +182,14 @@ public class Patient implements Serializable {
     }
     public void setUserID(Integer userID) {
         this.userID = userID;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Patient p = (Patient) obj;
+        if( (this.patientID==p.patientID) || (this.userID==p.userID) ){
+            return true;
+        }
+        return false;
     }
 }

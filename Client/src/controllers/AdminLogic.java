@@ -1,58 +1,54 @@
 package controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import entities.*;
 
 public class AdminLogic { 
 
-    public static List<User> showAllUsers(){
+    public static List<User> showAllUsers() throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_ShowAllUsers_Query();
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+        ClientLogic.sendQuery(q);
 
-        return ClientThread.getServerResponse().getUser_List();
+        return ClientLogic.getServerResponse().getUser_List();
     }
 
-    public static List<Patient> showAllPatients(){
+    public static List<Patient> showAllPatients() throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_ShowAllPatients_Query();
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+        ClientLogic.sendQuery(q);
 
-        return ClientThread.getServerResponse().getPatient_List();
+        return ClientLogic.getServerResponse().getPatient_List();
     }
 
-    public static List<Worker> showAllWorkers(){
+    public static List<Worker> showAllWorkers() throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_ShowAllWorkers_Query();
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+        ClientLogic.sendQuery(q);
 
-        return ClientThread.getServerResponse().getWorker_List();
+        return ClientLogic.getServerResponse().getWorker_List();
     }
 
-    public static Integer deleteUser(Integer userId){
+    public static Integer deleteUser(Integer userId) throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_DeleteUser_Query(userId);
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+        ClientLogic.sendQuery(q);
 
-        Query srvResponse= ClientThread.getServerResponse();
+        Query srvResponse= ClientLogic.getServerResponse();
         if(srvResponse.getControlMsg().contains("Success")){
             return 0;
         }
         return -1;
     }
 
-    public static Integer createUser(String username, byte[] password, Integer role){
+    public static Integer createUser(String username, byte[] password, Integer role) throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_CreateUser_Query(username, password, role);
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+        ClientLogic.sendQuery(q);
 
-        Query srvResponse= ClientThread.getServerResponse();
+        Query srvResponse= ClientLogic.getServerResponse();
         if(srvResponse.getControlMsg().contains("Success")){
             return Integer.parseInt(srvResponse.getControlMsg().split(":")[1]);
         }else if(srvResponse.getControlMsg().contains("UsernameTaken")){
@@ -61,26 +57,75 @@ public class AdminLogic {
         return -1;
     }
 
-    public static Integer createPatient(Patient p){
+    public static Integer createPatient(Patient p) throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_CreatePatient_Query(p);
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+        ClientLogic.sendQuery(q);
 
-        if(ClientThread.getServerResponse().getControlMsg().contains("Error")){return null;}
+        if(ClientLogic.getServerResponse().getControlMsg().contains("Error")){return null;}
 
         return 0;
     }
 
-    public static Integer createWorker(Integer userid, String name, String surname){
+    public static Integer createWorker(Integer userid, String name, String surname) throws ClassNotFoundException, IOException{
         Query q = new Query();
         q.construct_CreateWorker_Query(userid, name, surname);
-        ClientThread.setClientQuery(q);
-        ClientThread.sendQuery();
+        ClientLogic.sendQuery(q);
 
-        if(ClientThread.getServerResponse().getControlMsg().contains("Error")){return null;}
+        if(ClientLogic.getServerResponse().getControlMsg().contains("Error")){return null;}
 
         return 0;
+    }
+
+    public static Integer editPatient(Patient p) throws ClassNotFoundException, IOException{
+        Query q = new Query();
+        q.construct_EditPatient_Query(p);
+        ClientLogic.sendQuery(q);
+
+        if(ClientLogic.getServerResponse().getControlMsg().contains("Error")){return null;}
+
+        return 0;
+    }
+
+    public static Integer editDoctor(Worker w) throws ClassNotFoundException, IOException{
+        Query q = new Query();
+        q.construct_EditWorker_Query(w.getWorkerID(),w.getName(),w.getSurname());
+        ClientLogic.sendQuery(q);
+
+        if(ClientLogic.getServerResponse().getControlMsg().contains("Error")){return null;}
+
+        return 0;
+    }
+
+    public static Integer createLink(Integer pId, Integer wId) throws ClassNotFoundException, IOException{
+        Query q = new Query();
+        q.construct_CreateLink_Query(pId,wId);
+        ClientLogic.sendQuery(q);
+
+        if(ClientLogic.getServerResponse().getControlMsg().contains("Error")){return null;}
+
+        return 0;
+    }
+
+    public static Worker getDoctor(Integer userID) throws ClassNotFoundException, IOException{
+        Query q = new Query();
+        q.construct_GetDoctor_Query(userID);
+        ClientLogic.sendQuery(q);
+
+        Query srvResponse= ClientLogic.getServerResponse();
+        if(srvResponse.getControlMsg()!=null){return null;}
+
+        return srvResponse.getWorker();
+    }
+    public static Patient getPatient(Integer userID) throws ClassNotFoundException, IOException{
+        Query q = new Query();
+        q.construct_GetPatient_Query(userID);
+        ClientLogic.sendQuery(q);
+
+        Query srvResponse= ClientLogic.getServerResponse();
+        if(srvResponse.getControlMsg()!=null){return null;}
+
+        return srvResponse.getPatient();
     }
 
 }

@@ -18,6 +18,7 @@ public class MedicalTest implements Serializable {
         this.patientID=patID;
         this.patientComments=symptoms;
         this.reportDate=date;
+        this.params=null;
     }
     
     public MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String params){
@@ -79,5 +80,9 @@ public class MedicalTest implements Serializable {
     }
     public Integer getTestID() {
         return testID;
+    }
+    public String bitalinoDataAttached(){
+        if(params==null){return "No BITalino data.";}
+        return "BITalino data available.";
     }
 }

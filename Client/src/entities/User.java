@@ -44,6 +44,17 @@ public class User implements Serializable {
     public Integer getRole() {
         return role;
     }
+    public String getRoleString(){
+        switch (role) {
+            case 0:
+                return "Admin";
+            case 1:
+                return "Doctor";
+            default:
+                return "Patient";
+        }
+    }
+
     public String getUsername() {
         return username;
     }

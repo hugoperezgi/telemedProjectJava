@@ -60,8 +60,8 @@ public class SQL {
 
         Statement s3 = c.createStatement();                      
         String str3 = "CREATE TABLE doctor_patient "
-                    + "(patient_id INTEGER  REFERENCES patients(patientID) ON UPDATE CASCADE ON DELETE CASCADE,"
-                    + " doctor_id INTEGER  REFERENCES workers(workerId) ON UPDATE CASCADE ON DELETE CASCADE,"
+                    + "(patient_id INTEGER REFERENCES patients(patientID) ON UPDATE CASCADE ON DELETE CASCADE,"
+                    + " doctor_id INTEGER REFERENCES workers(workerId) ON UPDATE CASCADE ON DELETE CASCADE,"
                     + " PRIMARY KEY (patient_id,doctor_id))";
         s3.executeUpdate(str3);                                       
         s3.close();  
@@ -128,7 +128,7 @@ public class SQL {
 	}
 
 	public List<User> getAllUsers() throws SQLException{ 
-		String str = "SELECT (userId, username, role) FROM users";
+		String str = "SELECT userId, username, role FROM users";
 		PreparedStatement p = c.prepareStatement(str);
 		ResultSet rs = p.executeQuery();
 		List <User> uList = new ArrayList<User>();
@@ -342,7 +342,7 @@ public class SQL {
 		ResultSet rs = p.executeQuery();
 		List <Worker> wList = new ArrayList<Worker>();
 		while(rs.next()){ 
-			wList.add( new Worker(rs.getInt("workerId"), rs.getString("workerName"), rs.getString("workerSurname")) );
+			wList.add( new Worker(rs.getInt("workerId"),null, rs.getString("workerName"), rs.getString("workerSurname")) );
 		}
 		p.close();
 		rs.close();
@@ -484,14 +484,14 @@ public class SQL {
 		PreparedStatement p;
 
 		if(w.getName()!=null){
-			str = "UPDATE patients SET workerName = ? WHERE workerId = ?";
+			str = "UPDATE workers SET workerName = ? WHERE workerId = ?";
 			p = c.prepareStatement(str);
 			p.setString(1, w.getName());
 			p.setInt(2, w.getWorkerID());
 			p.executeUpdate();	
 		}
 		if(w.getSurname()!=null){
-			str = "UPDATE patients SET workerSurname = ? WHERE workerId = ?";
+			str = "UPDATE workers SET workerSurname = ? WHERE workerId = ?";
 			p = c.prepareStatement(str);
 			p.setString(1, w.getSurname());
 			p.setInt(2, w.getWorkerID());

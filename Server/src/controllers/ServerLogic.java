@@ -331,4 +331,35 @@ public class ServerLogic {
         return q;
     }
 
+    public static Query handle_getDoctor(Query c) {
+        Query q = new Query();
+        try {
+            q.construct_Yourself_Worker_Query(ServerThread.sql.selectWorkerByUserId(c.getPatientID()));
+        } catch (Exception e) {
+            q.construct_Control_Query("Error");
+        }
+        return q;
+    }
+
+    public static Query handle_getPatient(Query c) {
+        Query q = new Query();
+        try {
+            q.construct_Yourself_Patient_Query(ServerThread.sql.selectPatientByUserId(c.getPatientID()));
+        } catch (Exception e) {
+            q.construct_Control_Query("Error");
+        }
+        return q;
+    }
+
+    public static Query handle_createLink(Query c) {
+        Query q = new Query();
+        try {
+            ServerThread.sql.createLinkDoctorPatient(c.getPatientID(),c.getUserIdToDelete());
+            q.construct_Control_Query("Success");
+        } catch (Exception e) {
+            q.construct_Control_Query("Error");
+        }
+        return q;
+    }
+
 }

@@ -14,8 +14,8 @@
             <Font name="Gill Sans MT" size="30.0" />
          </font>
       </Text>
-      <TextField fx:id="usernameTextfieldLogIn" layoutX="225.0" layoutY="250.0" promptText="User" style="-fx-background-color: #21252b;" />
-      <PasswordField fx:id="passwordTextFieldLogIn" layoutX="225.0" layoutY="287.0" promptText="Password" style="-fx-background-color: #21252b;" />
+      <TextField fx:id="usernameTextfieldLogIn" layoutX="225.0" layoutY="250.0" promptText="User" style="-fx-background-color: #21252b; -fx-text-fill:  #abb2bf; -fx-prompt-text-fill:  #abb2bf;" />
+      <PasswordField fx:id="passwordTextFieldLogIn" layoutX="225.0" layoutY="287.0" promptText="Password" style="-fx-background-color: #21252b; -fx-text-fill:  #abb2bf; -fx-prompt-text-fill:  #abb2bf;" />
       <Text fill="#adbac7" layoutX="168.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Log in to shut down the server:" wrappingWidth="262.147216796875">
          <font>
             <Font name="Gill Sans MT" size="20.0" />
