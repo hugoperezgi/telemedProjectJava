@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import controllers.AdminLogic;
 import controllers.ClientLogic;
+import controllers.DeadServer;
 import controllers.JustDont;
 import entities.*;
 import javafx.beans.property.SimpleStringProperty;
@@ -152,17 +153,26 @@ public class AdminController implements Initializable{
         Button buttonEditUser;
         
         private void populateUserTable() throws ClassNotFoundException, IOException{
-            tableViewUsers.getItems().clear();
-            uList=AdminLogic.showAllUsers();
-            tableViewUsers.getItems().addAll(uList);
-            comboBoxSelectedUser.getItems().clear();
-                String[] sList = new String[uList.size()];
-                int i=0;
-                for (User u : uList) {
-                    sList[i]="Id: "+u.getUserID()+" - ("+u.getRoleString()+")";
-                    i++;
-                }
-            comboBoxSelectedUser.getItems().setAll(sList);
+
+            try {
+                
+                tableViewUsers.getItems().clear();
+                uList=AdminLogic.showAllUsers();
+                tableViewUsers.getItems().addAll(uList);
+                comboBoxSelectedUser.getItems().clear();
+                    String[] sList = new String[uList.size()];
+                    int i=0;
+                    for (User u : uList) {
+                        sList[i]="Id: "+u.getUserID()+" - ("+u.getRoleString()+")";
+                        i++;
+                    }
+                comboBoxSelectedUser.getItems().setAll(sList);
+
+            } catch (DeadServer e) {
+                e.printStackTrace();
+                logOut();
+            }
+
         }
 
         @FXML
@@ -207,17 +217,26 @@ public class AdminController implements Initializable{
         }
         @FXML
         private void deleteUser() throws ClassNotFoundException, IOException, JustDont{
+
             if(comboBoxSelectedUser.getSelectionModel().isEmpty()){
                 ErrorPopup.errorPopup(2);
                 return;
             }
-            Integer index = comboBoxSelectedUser.getSelectionModel().getSelectedIndex();
-            if(AdminLogic.deleteUser(uList.get(index).getUserID())==-1){
-                ErrorPopup.errorPopup(0);
-            }else{
-                SuccessPopup.successPopup(6);
-                hideAll();
-                mainMenu();
+            
+            try {
+                
+                Integer index = comboBoxSelectedUser.getSelectionModel().getSelectedIndex();
+                if(AdminLogic.deleteUser(uList.get(index).getUserID())==-1){
+                    ErrorPopup.errorPopup(0);
+                }else{
+                    SuccessPopup.successPopup(6);
+                    hideAll();
+                    mainMenu();
+                }
+                
+            } catch (DeadServer e) {
+                e.printStackTrace();
+                logOut();
             }
         }
 
@@ -271,45 +290,63 @@ public class AdminController implements Initializable{
             switch (r) {
                 case 1:
                 
-                    Worker w = AdminLogic.getDoctor(u.getUserID());
-                    if(w==null){
-                        ErrorPopup.errorPopup(0);
-                        return -1;
+                    try {
+                        
+                        Worker w = AdminLogic.getDoctor(u.getUserID());
+    
+                        if(w==null){
+                            ErrorPopup.errorPopup(0);
+                            return -1;
+                        }
+                        setUpEditDoctorPane();
+                        textFieldWorkerRole.setText("Doctor");
+                        textFieldWorkerRole.setEditable(false);
+                        id=w.getWorkerID();
+                        textFieldWorkerId.setText(Integer.toString(id));
+                        textFieldWorkerId.setEditable(false);
+                        textFieldWorkerName.setPromptText(w.getName());
+                        textFieldPatientSurname.setPromptText(w.getSurname());
+                        
+                    } catch (DeadServer e) {
+                        e.printStackTrace();
+                        logOut();
                     }
-                    setUpEditDoctorPane();
-                    textFieldWorkerRole.setText("Doctor");
-                    textFieldWorkerRole.setEditable(false);
-                    id=w.getWorkerID();
-                    textFieldWorkerId.setText(Integer.toString(id));
-                    textFieldWorkerId.setEditable(false);
-                    textFieldWorkerName.setPromptText(w.getName());
-                    textFieldPatientSurname.setPromptText(w.getSurname());
+
 
                     break;
                 case 2:
 
-                    Patient p= AdminLogic.getPatient(u.getUserID());
-                    if(p==null){
-                        ErrorPopup.errorPopup(0);
-                        return -1;
+                    try {
+                        
+                        Patient p= AdminLogic.getPatient(u.getUserID());
+                        if(p==null){
+                            ErrorPopup.errorPopup(0);
+                            return -1;
+                        }
+                        setUpEditPatientPane();
+                        textFieldPatientRole.setText("Patient");
+                        textFieldPatientRole.setEditable(false);
+                        id = p.getPatientID();
+                        textFieldPatientId.setText(Integer.toString(id));
+                        textFieldPatientId.setEditable(false);
+                        if(p.getGender().equalsIgnoreCase("Male")){
+                            radioButtonMale.setSelected(true);
+                            radioButtonFem.setSelected(false);
+                        }else {
+                            radioButtonMale.setSelected(false);
+                            radioButtonFem.setSelected(true);
+                        }
+                        textFieldPatientName.setPromptText(p.getName());
+                        textFieldPatientSurname.setPromptText(p.getSurname());
+                        datePickerBDate.setPromptText(p.getBirthDate().toString());
+                        comboBoxBloodType.setPromptText(p.getBloodType());
+                        
+                    } catch (DeadServer e) {
+                        e.printStackTrace();
+                        logOut();
                     }
-                    setUpEditPatientPane();
-                    textFieldPatientRole.setText("Patient");
-                    textFieldPatientRole.setEditable(false);
-                    id = p.getPatientID();
-                    textFieldPatientId.setText(Integer.toString(id));
-                    textFieldPatientId.setEditable(false);
-                    if(p.getGender().equalsIgnoreCase("Male")){
-                        radioButtonMale.setSelected(true);
-                        radioButtonFem.setSelected(false);
-                    }else {
-                        radioButtonMale.setSelected(false);
-                        radioButtonFem.setSelected(true);
-                    }
-                    textFieldPatientName.setPromptText(p.getName());
-                    textFieldPatientSurname.setPromptText(p.getSurname());
-                    datePickerBDate.setPromptText(p.getBirthDate().toString());
-                    comboBoxBloodType.setPromptText(p.getBloodType());
+
+
                     
                     break;
                 default:
@@ -415,10 +452,19 @@ public class AdminController implements Initializable{
                 p.setBirthDate(bDate);
             }
 
-            if(AdminLogic.editPatient(p)==null){
-                ErrorPopup.errorPopup(0);
-                return;            
-            }
+            try {
+                
+                if(AdminLogic.editPatient(p)==null){
+                    ErrorPopup.errorPopup(0);
+                    return;            
+                }
+                
+            } catch (DeadServer e) {
+                e.printStackTrace();
+                logOut();
+            }    
+
+
 
             SuccessPopup.successPopup(1);
             resetEditPatient();
@@ -472,11 +518,20 @@ public class AdminController implements Initializable{
 
             Patient p = new Patient(id,name,surname,bloodType,gender,bDate);      
             
-            if(AdminLogic.createPatient(p)==null){
-                ErrorPopup.errorPopup(0);
-                creatingUser=false;
-                return;            
+            try {
+                
+                if(AdminLogic.createPatient(p)==null){
+                    ErrorPopup.errorPopup(0);
+                    creatingUser=false;
+                    return;            
+                }
+                
+            } catch (DeadServer e) {
+                e.printStackTrace();
+                logOut();
             }
+
+
             creatingUser=false;
 
             SuccessPopup.successPopup(4);
@@ -539,10 +594,19 @@ public class AdminController implements Initializable{
             if(surname==""){surname=null;}
             Worker w = new Worker(id,null,name,surname);
             
-            if(AdminLogic.editDoctor(w)==null){
-                ErrorPopup.errorPopup(0);
-                return;
-            }        
+            try {
+                
+                if(AdminLogic.editDoctor(w)==null){
+                    ErrorPopup.errorPopup(0);
+                    return;
+                }        
+                
+            } catch (DeadServer e) {
+                e.printStackTrace();
+                logOut();
+            }
+
+
 
             SuccessPopup.successPopup(2);
             resetEditDoct();
@@ -557,11 +621,20 @@ public class AdminController implements Initializable{
             String surname = textFieldWorkerSurname.getText();
             if(surname==""){ErrorPopup.errorPopup(2);return;}
             
-            if(AdminLogic.createWorker(id,name,surname)==null){
-                ErrorPopup.errorPopup(0);
-                creatingUser=false;
-                return;            
-            }        
+            try {
+                
+                if(AdminLogic.createWorker(id,name,surname)==null){
+                    ErrorPopup.errorPopup(0);
+                    creatingUser=false;
+                    return;            
+                }        
+                
+            } catch (DeadServer e) {
+                e.printStackTrace();
+                logOut();
+            }
+
+
      
             creatingUser=false;
             SuccessPopup.successPopup(5);
@@ -579,24 +652,33 @@ public class AdminController implements Initializable{
         private ComboBox<String> comboBoxLinkDoctor;
 
         private void populateLinkBox() throws ClassNotFoundException, IOException{
-            wList = AdminLogic.showAllWorkers();
-                String[] sList = new String[wList.size()];
-                int i=0;
-                for (Worker w : wList) {
-                    sList[i]="Id: "+w.getWorkerID()+" - ("+w.getName()+" "+w.getSurname()+")";
-                    i++;
-                }
-            comboBoxLinkDoctor.getSelectionModel().clearSelection();
-            comboBoxLinkDoctor.getItems().setAll(sList);
-            pList = AdminLogic.showAllPatients();
-                String[] sList2 = new String[pList.size()];
-                i=0;
-                for (Patient p : pList) {
-                    sList2[i]="Id: "+p.getPatientID()+" - ("+p.getName()+" "+p.getSurname()+")";
-                    i++;
-                }
-            comboBoxLinkPatient.getSelectionModel().clearSelection();
-            comboBoxLinkPatient.getItems().setAll(sList2);        
+
+            try {
+                
+                wList = AdminLogic.showAllWorkers();
+                    String[] sList = new String[wList.size()];
+                    int i=0;
+                    for (Worker w : wList) {
+                        sList[i]="Id: "+w.getWorkerID()+" - ("+w.getName()+" "+w.getSurname()+")";
+                        i++;
+                    }
+                comboBoxLinkDoctor.getSelectionModel().clearSelection();
+                comboBoxLinkDoctor.getItems().setAll(sList);
+                pList = AdminLogic.showAllPatients();
+                    String[] sList2 = new String[pList.size()];
+                    i=0;
+                    for (Patient p : pList) {
+                        sList2[i]="Id: "+p.getPatientID()+" - ("+p.getName()+" "+p.getSurname()+")";
+                        i++;
+                    }
+                comboBoxLinkPatient.getSelectionModel().clearSelection();
+                comboBoxLinkPatient.getItems().setAll(sList2);        
+                
+            } catch (DeadServer e) {
+                e.printStackTrace();
+                logOut();
+            }
+
         }
 
         @FXML
@@ -625,19 +707,28 @@ public class AdminController implements Initializable{
             Integer dId=wList.get(comboBoxLinkDoctor.getSelectionModel().getSelectedIndex()).getWorkerID();
             Integer pId=pList.get(comboBoxLinkPatient.getSelectionModel().getSelectedIndex()).getPatientID();
 
-            if(AdminLogic.createLink(pId,dId)==null){
-                ErrorPopup.errorPopup(22);
-                return;
-            }        
+            try {
+                
+                if(AdminLogic.createLink(pId,dId)==null){
+                    ErrorPopup.errorPopup(22);
+                    return;
+                }        
+                
+            } catch (DeadServer e) {
+                e.printStackTrace();
+                logOut();
+            }
+
+
+
             SuccessPopup.successPopup(3);
             mainMenu();
         }
 
     /**
      * hide+disable every pane
-     * @throws IOException
      */
-    private void hideAll() throws IOException{
+    private void hideAll(){
 
         paneMainMenu.setVisible(false);
         paneMainMenu.setDisable(true);
@@ -709,5 +800,6 @@ public class AdminController implements Initializable{
         ClientLogic.closeAll();
         System.exit(0);
     }
+
 
 }

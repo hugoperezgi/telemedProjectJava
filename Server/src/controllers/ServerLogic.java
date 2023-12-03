@@ -295,6 +295,7 @@ public class ServerLogic {
             switch (c.role) {
                 case 1:
                     q.construct_Yourself_Worker_Query(ServerThread.sql.selectWorkerByUserId(c.userID));
+                    c.wId=q.getWorker().getWorkerID();
                     break;
                 case 2:
                     q.construct_Yourself_Patient_Query(ServerThread.sql.selectPatientByUserId(c.userID));
@@ -312,7 +313,7 @@ public class ServerLogic {
     public static Query handle_ShowMyPatients(ClientHandler c){
         Query q = new Query();
         try {
-            q.construct_SendAllPatients_Query(ServerThread.sql.searchPatientByDoctor(c.userID));
+            q.construct_SendAllPatients_Query(ServerThread.sql.searchPatientByDoctor(c.wId));
         } catch (Exception e) {
             q.construct_Control_Query("Error");
         }

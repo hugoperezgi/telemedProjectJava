@@ -32,7 +32,7 @@ public class MedicalTest implements Serializable {
 
     public MedicalTest(Integer id, String doctVeredic){
         this.testID=id;
-        this.patientComments=doctVeredic;
+        this.doctorComments=doctVeredic;
     }     
 
     /**

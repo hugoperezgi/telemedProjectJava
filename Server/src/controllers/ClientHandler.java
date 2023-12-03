@@ -17,6 +17,7 @@ public class ClientHandler extends Thread {
     //Info about the user that this thread is handling
     public Integer userID=null;
     public Integer role=-1;
+    public Integer wId=null;
 
     //String with all the data that has been received from a patient when 
     //performing a test 

@@ -1,6 +1,5 @@
 package controllers;
 
-import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 
@@ -92,7 +91,7 @@ public class PatientLogic {
 
     }
 
-    private static String sendReportParameters(Integer testID, String[] params) throws ClassNotFoundException, IOException{
+    private static String sendReportParameters(Integer testID, String[] params) throws ClassNotFoundException, DeadServer{
         Query q = new Query();
         q.construct_SendReport_Query(testID, params); 
             ClientLogic.sendQuery(q);
@@ -105,10 +104,10 @@ public class PatientLogic {
      * <p>Check return for possible errors:
      * <p>{@code -1} - Error creating the report
      * <p>{@code -2} - Server Error, unknown
-     * @throws IOException
+     * @throws DeadServer
      * @throws ClassNotFoundException
      */
-    public static Integer createReport(Integer patientId, String patientComments, Date date) throws ClassNotFoundException, IOException{
+    public static Integer createReport(Integer patientId, String patientComments, Date date) throws ClassNotFoundException, DeadServer{
         Query q = new Query();
         q.construct_SendReport_Query(patientId, patientComments, date);
             ClientLogic.sendQuery(q);
@@ -126,10 +125,10 @@ public class PatientLogic {
     }
 
     /**Returns the patientID of the current user
-     * @throws IOException
+     * @throws DeadServer
      * @throws ClassNotFoundException
      * */
-    public static Patient getMyself() throws ClassNotFoundException, IOException{
+    public static Patient getMyself() throws ClassNotFoundException, DeadServer{
         Query q = new Query();
         q.construct_GetMyself_Query();
             ClientLogic.sendQuery(q);
@@ -142,10 +141,10 @@ public class PatientLogic {
     }
 
     /** <b>Returns:</b> <p>{@code 0} if edit was successful <p>{@code -1} if something went wrong 
-     * @throws IOException
+     * @throws DeadServer
      * @throws ClassNotFoundException
      * */
-    public static int editMyself(Patient p) throws IOException, ClassNotFoundException{
+    public static int editMyself(Patient p) throws DeadServer, ClassNotFoundException{
         Query q = new Query();
         q.construct_EditPatient_Query(p);
             ClientLogic.sendQuery(q);
@@ -158,10 +157,10 @@ public class PatientLogic {
     }
 
     /** <b>Returns:</b> <p>{@code 0} if edit was successful <p>{@code -1} if username is already taken <p>{@code -2} if something went wrong 
-     * @throws IOException
+     * @throws DeadServer
      * @throws ClassNotFoundException 
      **/
-    public static int editLogin(Integer userId, String user, byte[] psw) throws ClassNotFoundException, IOException{
+    public static int editLogin(Integer userId, String user, byte[] psw) throws ClassNotFoundException, DeadServer{
         Query q = new Query();
         q.construct_EditUser_Query(userId, user, psw);
             ClientLogic.sendQuery(q);
@@ -176,10 +175,10 @@ public class PatientLogic {
     }
 
     /** <b>Returns:</b> <p>{@code List<MedicalTest>} if query was successful <p>{@code null} if something went wrong 
-     * @throws IOException
+     * @throws DeadServer
      * @throws ClassNotFoundException
      * */
-    public static List<MedicalTest> checkMyReports(Integer patientID) throws ClassNotFoundException, IOException{
+    public static List<MedicalTest> checkMyReports(Integer patientID) throws ClassNotFoundException, DeadServer{
         Query q = new Query();
         q.construct_ShowClinical_Query(patientID);
             ClientLogic.sendQuery(q);

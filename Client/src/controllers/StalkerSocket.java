@@ -63,11 +63,9 @@ public class StalkerSocket extends Thread{
                 }
             } catch (ClassNotFoundException e) {
                 running=false;
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
                 running=false;
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

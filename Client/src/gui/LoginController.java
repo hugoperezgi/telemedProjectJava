@@ -23,7 +23,7 @@ public class LoginController {
     private ErrorPopup ErrorPopup = new ErrorPopup();
 
 
-    public void logIn(ActionEvent a) throws IOException{
+    public void logIn(ActionEvent a) throws IOException, ClassNotFoundException{
         Integer control = ClientLogic.logIn(username.getText(),psw.getText());
         switch (control) {
             case -2:
@@ -33,7 +33,7 @@ public class LoginController {
                 loadAdminUI(a);
                 break;
             case 1:
-                //TODO DOCT
+                loadDoctUI(a);
                 break;
             case 2:
                 loadPatientUI(a);
@@ -46,7 +46,7 @@ public class LoginController {
     }
     
 
-    private void loadPatientUI(ActionEvent aEvent) throws IOException{
+    private void loadPatientUI(ActionEvent aEvent) throws IOException, ClassNotFoundException{
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("PatientController.fxml"));
 		Parent root = loader.load();
 
@@ -71,7 +71,25 @@ public class LoginController {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-        
 
     }
+
+    private void loadDoctUI(ActionEvent aEvent) throws IOException, ClassNotFoundException{
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("WorkerController.fxml"));
+		Parent root = loader.load();
+
+        WorkerController wc = loader.getController();
+        wc.setSelf();
+        if(wc.myself==null){
+            ErrorPopup.errorPopup(11); //TODO "COuldnt retrive your data"
+        } else {
+            Stage stage = (Stage) ((Node) aEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
+
+    }
+
+
 }

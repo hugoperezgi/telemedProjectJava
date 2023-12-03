@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -44,12 +45,21 @@
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
-                        <ComboBox fx:id="comboBoxSelectedUser" layoutX="400.0" layoutY="558.0" prefWidth="400.0" promptText="Select an User" style="-fx-background-color: e0e0e0;" />
+                        <ComboBox fx:id="comboBoxSelectedUser" layoutX="400.0" layoutY="558.0" prefWidth="400.0" promptText="Select an User" style="-fx-background-color: e0e0e0;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ComboBox>
                         <Button fx:id="buttonDeleteUser" disable="true" layoutX="521.0" layoutY="596.0" mnemonicParsing="false" onAction="#deleteUser" style="-fx-background-color: #705697; -fx-border-color: ede8ef;" text="Delete Selected User" textFill="#ededf5">
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
                      </children>
                   </Pane>
@@ -59,6 +69,9 @@
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#705697" height="34.0" layoutX="200.0" layoutY="53.0" stroke="TRANSPARENT" strokeType="INSIDE" width="800.0" />
                         <Text fill="#ededf5" layoutX="206.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Type:" wrappingWidth="788.0000610351562">
@@ -107,7 +120,10 @@
                         <TextField fx:id="textFieldPatientId" editable="false" layoutX="206.0" layoutY="156.0" opacity="0.64" prefHeight="25.0" prefWidth="788.0" />
                         <TextField fx:id="textFieldPatientSurname" layoutX="206.0" layoutY="297.0" opacity="0.64" prefHeight="25.0" prefWidth="788.0" />
                         <DatePicker fx:id="datePickerBDate" layoutX="206.0" layoutY="509.0" opacity="0.64" prefHeight="25.0" prefWidth="788.0" promptText="Birth Date" />
-                        <ComboBox fx:id="comboBoxBloodType" layoutX="206.0" layoutY="365.0" opacity="0.64" prefHeight="25.0" prefWidth="788.0" promptText="BloodType" style="-fx-background-color: #d6cfe2; -fx-border-color: #705697; -fx-border-radius: 5;" />
+                        <ComboBox fx:id="comboBoxBloodType" layoutX="206.0" layoutY="365.0" opacity="0.64" prefHeight="25.0" prefWidth="788.0" promptText="BloodType" style="-fx-background-color: #d6cfe2; -fx-border-color: #705697; -fx-border-radius: 5;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ComboBox>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#705697" height="34.0" layoutX="200.0" layoutY="406.0" stroke="TRANSPARENT" strokeType="INSIDE" width="800.0" />
                         <Text fill="#ededf5" layoutX="206.0" layoutY="428.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Patient Gender:" wrappingWidth="788.0000610351562">
                            <font>
@@ -136,6 +152,9 @@
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
                      </children>
                   </Pane>
@@ -153,6 +172,9 @@
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#705697" height="34.0" layoutX="200.0" layoutY="271.0" stroke="TRANSPARENT" strokeType="INSIDE" width="800.0" />
                         <Text fill="#ededf5" layoutX="206.0" layoutY="291.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" wrappingWidth="788.0000610351562">
@@ -168,7 +190,10 @@
                            </font>
                         </Text>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d6cfe2" height="41.0" layoutX="200.0" layoutY="373.0" stroke="TRANSPARENT" strokeType="INSIDE" width="800.0" />
-                        <ComboBox fx:id="comboBoxRole" layoutX="206.0" layoutY="381.0" prefHeight="25.0" prefWidth="788.0" promptText="Select A Role" style="-fx-border-color: #705697; -fx-background-color: #d6cfe2; -fx-border-radius: 5;" />
+                        <ComboBox fx:id="comboBoxRole" layoutX="206.0" layoutY="381.0" prefHeight="25.0" prefWidth="788.0" promptText="Select A Role" style="-fx-border-color: #705697; -fx-background-color: #d6cfe2; -fx-border-radius: 5;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ComboBox>
                         <PasswordField fx:id="passwordFieldPSW" layoutX="206.0" layoutY="306.0" opacity="0.64" prefHeight="25.0" prefWidth="788.0" promptText="Password" />
                      </children>
                   </Pane>
@@ -186,6 +211,9 @@
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#705697" height="34.0" layoutX="200.0" layoutY="271.0" stroke="TRANSPARENT" strokeType="INSIDE" width="800.0" />
                         <Text fill="#ededf5" layoutX="206.0" layoutY="291.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" wrappingWidth="788.0000610351562">
@@ -215,6 +243,9 @@
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
                      </children>
                   </Pane>
@@ -238,9 +269,18 @@
                            <font>
                               <Font name="Arial Black" size="12.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
-                        <ComboBox fx:id="comboBoxLinkDoctor" layoutX="206.0" layoutY="229.0" prefHeight="25.0" prefWidth="788.0" promptText="Select a doctor" style="-fx-border-color: #705697; -fx-border-radius: 5; -fx-background-color: #d6cfe2;" />
-                        <ComboBox fx:id="comboBoxLinkPatient" layoutX="206.0" layoutY="306.0" prefHeight="25.0" prefWidth="788.0" promptText="Select a patient" style="-fx-border-color: #705697; -fx-border-radius: 5; -fx-background-color: #d6cfe2;" />
+                        <ComboBox fx:id="comboBoxLinkDoctor" layoutX="206.0" layoutY="229.0" prefHeight="25.0" prefWidth="788.0" promptText="Select a doctor" style="-fx-border-color: #705697; -fx-border-radius: 5; -fx-background-color: #d6cfe2;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ComboBox>
+                        <ComboBox fx:id="comboBoxLinkPatient" layoutX="206.0" layoutY="306.0" prefHeight="25.0" prefWidth="788.0" promptText="Select a patient" style="-fx-border-color: #705697; -fx-border-radius: 5; -fx-background-color: #d6cfe2;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ComboBox>
                      </children>
                   </Pane>
                   <Pane fx:id="paneMainMenu" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -256,49 +296,76 @@
                   <Button fx:id="buttonMenuCreateUser_L" layoutX="27.0" layoutY="26.0" mnemonicParsing="false" onAction="#showCreateUser" prefHeight="67.0" prefWidth="240.0" style="-fx-background-color: c4b7d7; -fx-border-color: ede8ef; -fx-background-radius: 10; -fx-border-radius: 10;" text="Create User" textFill="#705697" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="Gill Sans MT Bold" size="18.0" />
-                     </font></Button>
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
                   <Button fx:id="buttonMenuEditUser_L" layoutX="393.0" layoutY="3.0" mnemonicParsing="false" onAction="#showEditUser" prefWidth="240.0" style="-fx-background-color: c4b7d7; -fx-border-color: ede8ef; -fx-background-radius: 10; -fx-border-radius: 10;" text="Edit User" textFill="#705697" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="250.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="Gill Sans MT Bold" size="18.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <Button layoutX="1051.0" layoutY="26.0" mnemonicParsing="false" onAction="#logOut" prefHeight="67.0" prefWidth="120.0" style="-fx-background-color: c4b7d7; -fx-border-color: ede8ef; -fx-background-radius: 10; -fx-border-radius: 10;" text="Log Out" textFill="#705697" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="Gill Sans MT Bold" size="18.0" />
-                     </font></Button>
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
                   <Separator layoutX="340.0" layoutY="10.0" orientation="VERTICAL" prefHeight="200.0" style="-fx-background-color: ede8ef; -fx-border-color: ede8ef;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="490.0" AnchorPane.topAnchor="0.0" />
                   <Separator layoutX="350.0" layoutY="20.0" orientation="VERTICAL" prefHeight="200.0" style="-fx-background-color: ede8ef; -fx-border-color: ede8ef;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="125.0" AnchorPane.topAnchor="0.0" />
                   <Button fx:id="buttonMenuDeleteUser_L" layoutX="490.0" layoutY="23.0" mnemonicParsing="false" onAction="#showDeleteUser" prefWidth="240.0" style="-fx-background-color: c4b7d7; -fx-border-color: ede8ef; -fx-background-radius: 10; -fx-border-radius: 10;" text="Delete User" textFill="#705697" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="496.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="Gill Sans MT Bold" size="18.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <Separator layoutX="772.0" layoutY="-60.0" orientation="VERTICAL" prefHeight="200.0" style="-fx-background-color: ede8ef; -fx-border-color: ede8ef;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="735.0" AnchorPane.topAnchor="5.0" />
                   <Button fx:id="buttonMenuLinkUsers_L" layoutX="744.0" layoutY="14.0" mnemonicParsing="false" onAction="#showLinkUsers" prefWidth="240.0" style="-fx-background-color: c4b7d7; -fx-border-color: ede8ef; -fx-background-radius: 10; -fx-border-radius: 10;" text="Link Users" textFill="#705697" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="740.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="Gill Sans MT Bold" size="18.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <Button fx:id="buttonMenuCreateUser_D" disable="true" layoutX="37.0" layoutY="36.0" mnemonicParsing="false" onAction="#createUser" prefHeight="67.0" prefWidth="240.0" style="-fx-background-color: #705697; -fx-border-color: ede8ef; -fx-background-radius: 10; -fx-border-radius: 10;" text="Create User" textFill="#ededf5" visible="false" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="Gill Sans MT Bold" size="18.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <Button fx:id="buttonMenuEditUser_D" disable="true" layoutX="403.0" layoutY="13.0" mnemonicParsing="false" onAction="#showEditUser" prefWidth="240.0" style="-fx-background-color: #705697; -fx-border-color: ede8ef; -fx-background-radius: 10; -fx-border-radius: 10;" text="Edit User" textFill="#ededf5" visible="false" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="250.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="Gill Sans MT Bold" size="18.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <Button fx:id="buttonMenuDeleteUser_D" disable="true" layoutX="500.0" layoutY="33.0" mnemonicParsing="false" onAction="#showDeleteUser" prefWidth="240.0" style="-fx-background-color: #705697; -fx-border-color: ede8ef; -fx-background-radius: 10; -fx-border-radius: 10;" text="Delete User" textFill="#ededf5" visible="false" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="497.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="Gill Sans MT Bold" size="18.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <Separator layoutX="980.0" orientation="VERTICAL" prefHeight="200.0" style="-fx-background-color: ede8ef; -fx-border-color: ede8ef;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="980.0" AnchorPane.rightAnchor="211.33333333333334" AnchorPane.topAnchor="5.0" />
                   <Button fx:id="buttonMenuLinkUsers_D" disable="true" layoutX="754.0" layoutY="24.0" mnemonicParsing="false" onAction="#showLinkUsers" prefWidth="240.0" style="-fx-background-color: #705697; -fx-border-color: ede8ef; -fx-background-radius: 10; -fx-border-radius: 10;" text="Link Users" textFill="#ededf5" visible="false" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="740.0" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="Gill Sans MT Bold" size="18.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                </children>
             </AnchorPane>

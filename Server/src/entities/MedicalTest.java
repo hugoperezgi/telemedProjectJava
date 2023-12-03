@@ -12,16 +12,16 @@ public class MedicalTest implements Serializable {
     private String doctorComments;
     private Date reportDate;
 
-    /** Int[channel(0->5)][sample(0->n)] */
-    private Integer[][] params; 
+    private Integer[] params; 
 
     public MedicalTest(Integer patID, String symptoms, Date date){
         this.patientID=patID;
         this.patientComments=symptoms;
         this.reportDate=date;
+        this.params=null;
     }
     
-    public MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String[] params){
+    public MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String params){
         this.patientID=patID;
         this.patientComments=symptoms;
         this.reportDate=date;
@@ -32,38 +32,33 @@ public class MedicalTest implements Serializable {
 
     public MedicalTest(Integer id, String doctVeredic){
         this.testID=id;
-        this.patientComments=doctVeredic;
+        this.doctorComments=doctVeredic;
     }     
 
     /**
      * Undo the formatting done by paramsToString(), used to recover the data from String format
-     * @param paramString Array of 6 Strings with the format "parameter0 parameter1 ... parameterN ", one for each channel.
-     * @return <b>params</b> Integer[channel][sample] with the parameters
+     * @param paramString String with the format "parameter0 parameter1 ... parameterN "
+     * @return <b>params</b> Integer[ ] with the parameters
      */
-    private Integer[][] getParamsFromString(String[] paramString){
+    private Integer[] getParamsFromString(String paramString){
         if(params==null){return null;}
-        for (int j = 0; j < paramString.length; j++) {
-            String[] s=paramString[j].split(" ");
-            Integer[][] params= new Integer[paramString.length][s.length];
-            for (int i=0; i<s.length;i++) {
-                if(s[i]==""){break;}
-                params[j][i]=Integer.parseInt(s[i]);
-            }
+        String[] s=paramString.split(" ");
+        Integer[] params= new Integer[s.length];
+        for (int i=0; i<s.length;i++) {
+            if(s[i]==""){break;}
+            params[i]=Integer.parseInt(s[i]);
         }
         return params;
     }
     
     /**
      * For db storage, cba doing blobs
-     * @return String array with format: "parameter0 parameter1 ... parameterN "
+     * @return "parameter0 parameter1 ... parameterN "
      */
-    public String[] paramsToString(){
-        String s[] = new String[6];
-        for (int i = 0; i < s.length; i++) {
-            s[i]="";
-            for (Integer integer : this.params[i]) {    
-                s[i]+=(integer+" ");
-            }
+    public String paramsToString(){
+        String s = "";
+        for (Integer integer : this.params) {
+            s=s+integer+" ";
         }
         return s;
     }
@@ -85,5 +80,9 @@ public class MedicalTest implements Serializable {
     }
     public Integer getTestID() {
         return testID;
+    }
+    public String bitalinoDataAttached(){
+        if(params==null){return "No BITalino data.";}
+        return "BITalino data available.";
     }
 }

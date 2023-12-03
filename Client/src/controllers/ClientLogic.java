@@ -78,19 +78,28 @@ public class ClientLogic {
             }
         }
     
-        public static void sendQuery(Query clientQuery) throws IOException {
-            oos.writeObject(clientQuery);
+        public static void sendQuery(Query clientQuery) throws DeadServer {
+            try {
+                oos.writeObject(clientQuery);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new DeadServer();
+            }
         }
 
-        public static Query getServerResponse() throws ClassNotFoundException, IOException {
-            return (Query) ois.readObject();
+        public static Query getServerResponse() throws ClassNotFoundException, DeadServer {
+            try {
+                return (Query) ois.readObject();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new DeadServer();
+            }
         }
         
         public static void closeAll(){
             try {
                 sck.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

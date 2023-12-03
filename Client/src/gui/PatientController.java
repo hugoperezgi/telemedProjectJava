@@ -1,6 +1,7 @@
 package gui;
 
 import controllers.ClientLogic;
+import controllers.DeadServer;
 import controllers.PatientLogic;
 import entities.MedicalTest;
 import entities.Patient;
@@ -39,6 +40,7 @@ public class PatientController implements Initializable{
 
     public Patient myself=null;
     private List<MedicalTest> mtList=null;
+    private MedicalTest mtTest=null;
     
     @FXML
     Pane paneShowReport;
@@ -63,17 +65,23 @@ public class PatientController implements Initializable{
             if(t.contains("No")){
                 downloadReport.setDisable(true);
             } else {
+                mtTest=m;
                 downloadReport.setDisable(false);
             }
             textBitalinoSignalAvailable.setText(t);
-            textAreaDocComments.setText(m.getDoctorComments());
+            if(m.getDoctorComments()==null){
+                textAreaDocComments.setText("No doctor comments added.");
+            }else{
+                textAreaDocComments.setText(m.getDoctorComments());
+            }
             textAreaDocComments.setEditable(false);
             textAreaPatientReport.setText(m.getPatientComments());
             textAreaPatientReport.setEditable(false);
         }
 
         public void downloadReportData(){
-            //TODO ffs why do I do dis
+            mtTest.bitalinoDataAttached();
+            //TODO - print to a .txt xD
         }
 
         public void goBackToSelectReport(){
@@ -120,7 +128,11 @@ public class PatientController implements Initializable{
             comboBoxSelectedReport.getItems().setAll(sList);
         }
 
-        public void selectReport(){
+        public void selectReport() throws IOException{
+            if(comboBoxSelectedReport.getSelectionModel().isEmpty()){
+                ErrorPopup.errorPopup(2);
+                return;
+            }
             int index = comboBoxSelectedReport.getSelectionModel().getSelectedIndex();
             updateSelectedReport(mtList.get(index));
 
@@ -164,15 +176,15 @@ public class PatientController implements Initializable{
             textReportDateCreate.setText("Current date: "+Date.valueOf(LocalDate.now()).toString());
         }
 
-        public void executeCreateReport(ActionEvent aEvent) throws IOException{
+        public void executeCreateReport(ActionEvent aEvent) throws IOException, ClassNotFoundException{
             stage = (Stage) ((Node) aEvent.getSource()).getScene().getWindow();
             String t= textAreaPatientReportCreate.getText();
             Integer id=-1;
             try {
                 id = PatientLogic.createReport(myself.getPatientID(),t,Date.valueOf(LocalDate.now()));
-            } catch (ClassNotFoundException | IOException e) {
-                // TODO Auto-generated catch block
+            } catch (DeadServer e) {
                 e.printStackTrace();
+                logOut();
             }
             if(id<0){
                 ErrorPopup.errorPopup(0);
@@ -183,8 +195,8 @@ public class PatientController implements Initializable{
                     int errCode = PatientLogic.sendBitalinoData(textFieldBitalinoMAC.getText(),i,id);
                     stage.getScene().setCursor(Cursor.DEFAULT);
                     if(errCode!=0){
-                    ErrorPopup.errorPopup(24);
-                    //TODO polish this turd
+                        ErrorPopup.errorPopup(24);
+                        //TODO polish this turd
                     }
                 }
                 SuccessPopup.successPopup(0);
@@ -197,13 +209,13 @@ public class PatientController implements Initializable{
     @FXML
     Button buttonCheckDrk;    
     
-    public void changeToCheckReports() throws IOException{
+    public void changeToCheckReports() throws IOException, ClassNotFoundException{
 
         try {
             mtList=PatientLogic.checkMyReports(myself.getPatientID());
-        } catch (ClassNotFoundException | IOException e) {
-            // TODO Auto-generated catch block
+        } catch (DeadServer e) {
             e.printStackTrace();
+            logOut();
         }
         if(mtList==null){ErrorPopup.errorPopup(7);}
         else{
@@ -246,6 +258,9 @@ public class PatientController implements Initializable{
 
     private void hideAll(){
 
+        Random rnd = new Random();
+        randomBSGO.setText(ffs[rnd.nextInt(ffs.length)]);
+
         buttonCheckDrk.setDisable(true);
         buttonCheckDrk.setVisible(false);
         buttonCreateDrk.setDisable(true);
@@ -270,7 +285,7 @@ public class PatientController implements Initializable{
         textAreaPatientReport.clear();
     }
 
-    String[] ffs={"The first step towards loyalty is trust","Great hope can come from small sacrifices","Trust is the greatest of gifts, but it must be earned","Who we are never changes, who we think we are does","To seek something is to believe in its possibility","Humility is the only defense against humiliation","Trust in your friends, and they’ll have reason to trust in you"};
+    String[] ffs={"(づ｡◕‿‿◕｡)づ","(◕‿◕✿)","(ᵔᴥᵔ)","♥‿♥","~(˘▾˘~)","(~˘▾˘)~","(｡◕‿‿◕｡)","(｡◕‿◕｡)","(¬_¬)","ʕ•ᴥ•ʔ"};
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -292,18 +307,15 @@ public class PatientController implements Initializable{
         System.exit(0);
     }
 
-    public void setSelf(){
-        try {
+    public void setSelf() throws ClassNotFoundException{
+        try{
             myself=PatientLogic.getMyself();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
+        } catch (DeadServer e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logOut();
         }
-    }
 
+    }
     //TODO EDIT DATA?
 
 

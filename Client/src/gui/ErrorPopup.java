@@ -20,8 +20,8 @@ public class ErrorPopup {
 	 * <p> {@code 5} Wrong username or password.
 	 * <p> {@code 7} No treatment to display
 	 * <p> {@code 9} No patients to display
-	 * <p> {@code 11} No patient selected
-	 * <p> {@code 12} No worker selected
+	 * <p> {@code 11} Could not retrieve your profile
+	 * <p> {@code 12} Server error
 	 * <p> {@code 13} No medical tests for the selected patient
 	 * <p> {@code 14} Date cannot be on the past
 	 * <p> {@code 17} New password == Old password
@@ -157,7 +157,7 @@ public class ErrorPopup {
 			loaderError = new FXMLLoader(getClass().getResource("errorPopup.fxml"));
 			rootError = loaderError.load();
 			errorPopupController = loaderError.getController();
-			errorPopupController.displayErrorText("Pick a patient");
+			errorPopupController.displayErrorText("Could not retrieve your profile");
 			sceneError = new Scene(rootError);
 			stageError = new Stage();
 			stageError.setScene(sceneError);
@@ -173,7 +173,7 @@ public class ErrorPopup {
 			loaderError = new FXMLLoader(getClass().getResource("errorPopup.fxml"));
 			rootError = loaderError.load();
 			errorPopupController = loaderError.getController();
-			errorPopupController.displayErrorText("Pick a worker");
+			errorPopupController.displayErrorText("Server Error.");
 			sceneError = new Scene(rootError);
 			stageError = new Stage();
 			stageError.setScene(sceneError);
@@ -297,7 +297,6 @@ public class ErrorPopup {
 			stageError.setResizable(false);
 			stageError.show();
 			break;
-
 		default:
 			break;
 		}

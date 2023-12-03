@@ -101,7 +101,7 @@ public class SQL {
 		try {
 			this.addUser(new User("patient", hashPassword("patient"), 2));
 			 p=this.checkPassword("patient", hashPassword("patient"));
-			this.addPatient(new Patient(p.getUserID(), 0, "name", "surname", "0-", "Male", java.sql.Date.valueOf(LocalDate.now())));
+			this.addPatient(new Patient(p.getUserID(), 0, "name1", "surname1", "0-", "Female", java.sql.Date.valueOf(LocalDate.now())));
 		} catch (Exception e) {
 			System.out.println("Something went wrong while creating the patient");
 			e.printStackTrace();
@@ -109,7 +109,36 @@ public class SQL {
 		try {
 			this.createLinkDoctorPatient(this.selectPatientByUserId(p.getUserID()).getPatientID(), this.selectWorkerByUserId(w.getUserID()).getWorkerID());
 		} catch (Exception e) {
+			System.out.println("Something went wrong while creating the link");
+			e.printStackTrace();
+		}
+
+		try {
+			this.addUser(new User("a", hashPassword("a"), 0));
+		} catch (Exception e) {
+			System.out.println("Something went wrong while creating the admin");
+			e.printStackTrace();
+		}
+		try {
+			this.addUser(new User("d", hashPassword("d"), 1));
+			 w=this.checkPassword("d", hashPassword("d"));
+			this.addWorker(new Worker(w.getUserID(), "name", "surname"));
+		} catch (Exception e) {
+			System.out.println("Something went wrong while creating the doctor");
+			e.printStackTrace();
+		}
+		try {
+			this.addUser(new User("p", hashPassword("p"), 2));
+			 p=this.checkPassword("p", hashPassword("p"));
+			this.addPatient(new Patient(p.getUserID(), 0, "name2", "surname2", "0-", "Male", java.sql.Date.valueOf(LocalDate.now())));
+		} catch (Exception e) {
 			System.out.println("Something went wrong while creating the patient");
+			e.printStackTrace();
+		}
+		try {
+			this.createLinkDoctorPatient(this.selectPatientByUserId(p.getUserID()).getPatientID(), this.selectWorkerByUserId(w.getUserID()).getWorkerID());
+		} catch (Exception e) {
+			System.out.println("Something went wrong while creating the link");
 			e.printStackTrace();
 		}
 
@@ -308,14 +337,14 @@ public class SQL {
 	}
 	
 	
-	public List<Patient> searchPatientByDoctor(Integer userId) throws SQLException, NotBoundException {
-		String str ="SELECT * FROM patients AS p JOIN doctor_patient AS dp ON p.patientID=dp.patient_id JOIN workers AS w ON w.workerId=dp.doctor_id WHERE w.userId = ?";
+	public List<Patient> searchPatientByDoctor(Integer workerId) throws SQLException, NotBoundException {
+		String str ="SELECT * FROM patients AS p JOIN doctor_patient AS dp ON p.patientID=dp.patient_id JOIN workers AS w ON w.workerId=dp.doctor_id WHERE w.workerId = ?";
 		PreparedStatement p = c.prepareStatement(str);
-		p.setInt(1,userId);
+		p.setInt(1,workerId);
 		ResultSet rs = p.executeQuery();
 		List <Patient> pList = new ArrayList<Patient>();
 		while(rs.next()){
-			pList.add( new Patient(rs.getInt("userId"), rs.getInt("patientID"), rs.getString("name"), rs.getString("surname"), rs.getString("blood_type"), rs.getString("gender"), rs.getDate("birthdate")) );
+			pList.add( new Patient(null, rs.getInt("patientID"), rs.getString("name"), rs.getString("surname"), rs.getString("blood_type"), rs.getString("gender"), rs.getDate("birthdate")) );
 		}
 		p.close();
 		rs.close();
