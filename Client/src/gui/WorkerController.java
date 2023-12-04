@@ -217,9 +217,8 @@ public class WorkerController implements Initializable {
             textAreaPatientReport.setEditable(false);
         }
 
-        public void downloadReportData(){
-            mtTest.bitalinoDataAttached();
-            //TODO - print to a .txt xD
+        public void downloadReportData() throws IOException{
+            mtTest.getReportFile();
         }
 
         public void goBackToSelectReport() throws ClassNotFoundException, IOException{

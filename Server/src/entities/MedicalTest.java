@@ -1,5 +1,9 @@
 package entities;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.*;
 
@@ -12,7 +16,7 @@ public class MedicalTest implements Serializable {
     private String doctorComments;
     private Date reportDate;
 
-    private Integer[] params; 
+    private String[] params; 
 
     public MedicalTest(Integer patID, String symptoms, Date date){
         this.patientID=patID;
@@ -21,13 +25,13 @@ public class MedicalTest implements Serializable {
         this.params=null;
     }
     
-    public MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String params){
+    public MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String[] params){
         this.patientID=patID;
         this.patientComments=symptoms;
         this.reportDate=date;
         this.testID=id;
         this.doctorComments=doctorComments;
-        this.params=getParamsFromString(params);
+        this.params=params;
     }
 
     public MedicalTest(Integer id, String doctVeredic){
@@ -35,32 +39,21 @@ public class MedicalTest implements Serializable {
         this.doctorComments=doctVeredic;
     }     
 
-    /**
-     * Undo the formatting done by paramsToString(), used to recover the data from String format
-     * @param paramString String with the format "parameter0 parameter1 ... parameterN "
-     * @return <b>params</b> Integer[ ] with the parameters
-     */
-    private Integer[] getParamsFromString(String paramString){
-        if(params==null){return null;}
-        String[] s=paramString.split(" ");
-        Integer[] params= new Integer[s.length];
-        for (int i=0; i<s.length;i++) {
-            if(s[i]==""){break;}
-            params[i]=Integer.parseInt(s[i]);
+    //TODO Create a function that translates data into plottable thingy
+
+    public void getReportFile() throws IOException{
+        FileOutputStream fos = new FileOutputStream("dowloadedReport.txt");
+        DataOutputStream dout = new DataOutputStream(new BufferedOutputStream(fos));
+        dout.writeUTF("Report "+this.testID+" from Patient "+this.patientID+"\n");
+        int i=0;
+        for (String string : params) {
+            dout.writeUTF("Channel "+i+" data:\n");
+            dout.writeUTF(string);
+            dout.writeUTF("\n");
+            i++;
         }
-        return params;
-    }
-    
-    /**
-     * For db storage, cba doing blobs
-     * @return "parameter0 parameter1 ... parameterN "
-     */
-    public String paramsToString(){
-        String s = "";
-        for (Integer integer : this.params) {
-            s=s+integer+" ";
-        }
-        return s;
+        dout.close();
+        fos.close();
     }
 
     public Integer getPatientID() {

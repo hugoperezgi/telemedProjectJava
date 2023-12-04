@@ -28,63 +28,64 @@ public class ServerLogic {
 
     public static Query handle_sendReportQuery(Query clientQuery, ClientHandler c){
         Query q = new Query();
-        Query q2= new Query();
+        // Query q2= new Query();
         try {
             MedicalTest t=clientQuery.getMedicalTest();
             if(t==null){
                 String[] params=clientQuery.getParamString();
                 
-                c.receivingDataFromPatient(); 
-                    //Adds this thread "c" to the "Transmitting Clients List" so that other threads
-                    //(doctor threads) can add their sck to a public list that is then used to send them
-                    //the parameters as they're received from patient (in near-RT)
+                // c.receivingDataFromPatient(); 
+                //     //Adds this thread "c" to the "Transmitting Clients List" so that other threads
+                //     //(doctor threads) can add their sck to a public list that is then used to send them
+                //     //the parameters as they're received from patient (in near-RT)
 
-                if(params==null){/*End data transmission + Return*/
+                // if(params==null){/*End data transmission + Return*/
                     
-                    ServerThread.sql.addParametersToMedicalTest(clientQuery.getCurrentTest(), c.testParamsReceived);
+                    // ServerThread.sql.addParametersToMedicalTest(clientQuery.getCurrentTest(), c.testParamsReceived);
+                    ServerThread.sql.addParametersToMedicalTest(clientQuery.getCurrentTest(), params);
                     q.construct_Control_Query("Success");
 
-                    List<ObjectOutputStream> stalkerList = c.getStalkingDoctors();
-                    for (ObjectOutputStream stalker : stalkerList) {
-                        try{stalker.close();}catch(Exception e){}
-                    }
-                        //Close all sockets connected to stalking doctors
+                //     List<ObjectOutputStream> stalkerList = c.getStalkingDoctors();
+                //     for (ObjectOutputStream stalker : stalkerList) {
+                //         try{stalker.close();}catch(Exception e){}
+                //     }
+                //         //Close all sockets connected to stalking doctors
 
-                    c.dataTransmissionEnded(); 
-                        //Remove the client thread from the list of receiving params list + clear stalker list
+                //     c.dataTransmissionEnded(); 
+                //         //Remove the client thread from the list of receiving params list + clear stalker list
 
-                } else {
+                // } else {
 
-                    //Store the received data
-                    for (int i = 0; i < params.length; i++) {
-                        c.testParamsReceived[i]+=params[i];
-                    }
+            //         //Store the received data
+            //         for (int i = 0; i < params.length; i++) {
+            //             c.testParamsReceived[i]+=params[i];
+            //         }
 
-                    //Send all received data to the Stalking doctors
-                    List<ObjectOutputStream> stalkerList = c.getStalkingDoctors();
-                    q2.construct_SendParamsRT_Query(c.testParamsReceived);
-                    if(!stalkerList.isEmpty()){
-                        for (ObjectOutputStream stalker : stalkerList) {
-                            try {
-                                stalker.writeObject(q2);
-                            } catch (IOException e) {
-                                try {
-                                    stalkerList.remove(stalker);
-                                    stalker.close();
-                                } catch (Exception e2) {}
-                            }
-                        }
-                    }
+            //         //Send all received data to the Stalking doctors
+            //         List<ObjectOutputStream> stalkerList = c.getStalkingDoctors();
+            //         q2.construct_SendParamsRT_Query(c.testParamsReceived);
+            //         if(!stalkerList.isEmpty()){
+            //             for (ObjectOutputStream stalker : stalkerList) {
+            //                 try {
+            //                     stalker.writeObject(q2);
+            //                 } catch (IOException e) {
+            //                     try {
+            //                         stalkerList.remove(stalker);
+            //                         stalker.close();
+            //                     } catch (Exception e2) {}
+            //                 }
+            //             }
+            //         }
 
-                    //Create the ACK for the received block
-                    String s = "ACK";
-                    for (int i = 0; i < c.testParamsReceived.length; i++) {
-                        s+=(":"+c.testParamsReceived[i].length());
-                    }
+            //         //Create the ACK for the received block
+            //         String s = "ACK";
+            //         for (int i = 0; i < c.testParamsReceived.length; i++) {
+            //             s+=(":"+c.testParamsReceived[i].length());
+            //         }
 
-                    q.construct_Control_Query(s);
-                        //Send the ACK to client
-                }
+            //         q.construct_Control_Query(s);
+            //             //Send the ACK to client
+            //     }
 
             }else{
                 Integer i=ServerThread.sql.addMedicalTest(t);
@@ -93,7 +94,7 @@ public class ServerLogic {
             }
         } catch (Exception e) {
             q.construct_Control_Query("Error");
-            c.dataTransmissionEnded(); //Remove the client thread from the list of receiving params list
+            // c.dataTransmissionEnded(); //Remove the client thread from the list of receiving params list
         }
         return q;
     }

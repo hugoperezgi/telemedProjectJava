@@ -15,6 +15,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -79,9 +80,8 @@ public class PatientController implements Initializable{
             textAreaPatientReport.setEditable(false);
         }
 
-        public void downloadReportData(){
-            mtTest.bitalinoDataAttached();
-            //TODO - print to a .txt xD
+        public void downloadReportData() throws IOException{
+            mtTest.getReportFile();
         }
 
         public void goBackToSelectReport(){
@@ -153,16 +153,21 @@ public class PatientController implements Initializable{
         CheckBox checkBoxBitalinoData;
         @FXML
         TextField textFieldBitalinoMAC;
+        @FXML
+        Slider sliderRecordTime;
 
         public void bitalinoCheckBox(){
             if(checkBoxBitalinoData.isSelected()){
                 textFieldBitalinoMAC.clear();
                 textFieldBitalinoMAC.setEditable(true);
+                sliderRecordTime.setDisable(false);
             }else{
                 textFieldBitalinoMAC.setEditable(false);
                 textFieldBitalinoMAC.clear();
-                textFieldBitalinoMAC.setText("BITalino MAC Address");
-                textFieldBitalinoMAC.setPromptText("BITalino MAC Address");
+                sliderRecordTime.setValue(10);
+                sliderRecordTime.setDisable(false);
+                textFieldBitalinoMAC.setText("XX:XX:XX:XX:XX:XX");
+                textFieldBitalinoMAC.setPromptText("XX:XX:XX:XX:XX:XX");
             }
         }
 
@@ -170,13 +175,16 @@ public class PatientController implements Initializable{
             checkBoxBitalinoData.setSelected(false);
             textFieldBitalinoMAC.setEditable(false);
             textFieldBitalinoMAC.clear();
-            textFieldBitalinoMAC.setText("BITalino MAC Address");
-            textFieldBitalinoMAC.setPromptText("BITalino MAC Address");
+            sliderRecordTime.setValue(10);
+            sliderRecordTime.setDisable(true);
+            textFieldBitalinoMAC.setText("XX:XX:XX:XX:XX:XX");
+            textFieldBitalinoMAC.setPromptText("XX:XX:XX:XX:XX:XX");
             textAreaPatientReportCreate.clear();        
             textReportDateCreate.setText("Current date: "+Date.valueOf(LocalDate.now()).toString());
         }
 
-        public void executeCreateReport(ActionEvent aEvent) throws IOException, ClassNotFoundException{
+        public void executeCreateReport(ActionEvent aEvent) throws IOException, ClassNotFoundException, InterruptedException{
+            int time = (int) sliderRecordTime.getValue(); 
             stage = (Stage) ((Node) aEvent.getSource()).getScene().getWindow();
             String t= textAreaPatientReportCreate.getText();
             Integer id=-1;
@@ -192,16 +200,23 @@ public class PatientController implements Initializable{
                 if(checkBoxBitalinoData.isSelected()){
                     int[] i = {0,};
                     stage.getScene().setCursor(Cursor.WAIT);
-                    int errCode = PatientLogic.sendBitalinoData(textFieldBitalinoMAC.getText(),i,id);
-                    stage.getScene().setCursor(Cursor.DEFAULT);
-                    if(errCode!=0){
-                        ErrorPopup.errorPopup(24);
-                        //TODO polish this turd
+                    PatientLogic.sendBitalinoData(textFieldBitalinoMAC.getText(),i,id,time);
+
+                    //Launch progress bar
+                    BitProgress bp = new BitProgress();
+                    bp.createWindow();
+                    int j=0;
+                    //Update progress bar from here, keep this ui thread frozen
+                    while((!BitProgress.pleaseStopIt)&&(j<time)){
+                        Thread.sleep(1000); 
+                        BitProgress.updateProgress((double)j/time);
+                        j++;
                     }
+                    stage.getScene().setCursor(Cursor.DEFAULT);
+                    //Finish everything once completed :)
                 }
-                SuccessPopup.successPopup(0);
             }
-            resetCreateReport();
+            // resetCreateReport();
         }
 
     @FXML
