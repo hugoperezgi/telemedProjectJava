@@ -215,8 +215,9 @@ public class PatientController implements Initializable{
                     stage.getScene().setCursor(Cursor.DEFAULT);
                     //Finish everything once completed :)
                 }
+                SuccessPopup.successPopup(0);
             }
-            // resetCreateReport();
+            resetCreateReport();
         }
 
     @FXML

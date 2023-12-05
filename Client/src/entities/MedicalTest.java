@@ -47,11 +47,13 @@ public class MedicalTest implements Serializable {
         dout.writeUTF("Report "+this.testID+" from Patient "+this.patientID+"\n");
         int i=0;
         for (String string : params) {
+            if(string==null){continue;}
             dout.writeUTF("Channel "+i+" data:\n");
             dout.writeUTF(string);
             dout.writeUTF("\n");
             i++;
         }
+        dout.flush();
         dout.close();
         fos.close();
     }
@@ -75,7 +77,9 @@ public class MedicalTest implements Serializable {
         return testID;
     }
     public String bitalinoDataAttached(){
-        if(params==null){return "No BITalino data.";}
-        return "BITalino data available.";
+        for (String string : params) {
+            if(string!=null){ return "BITalino data available.";}
+        }
+        return "No BITalino data.";
     }
 }
