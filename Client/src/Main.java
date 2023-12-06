@@ -1,4 +1,5 @@
 import controllers.*;
+import gui.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,6 +29,12 @@ public class Main extends Application {
     public static void main(String[] args) {
         
         ClientLogic.setup();
+        BIT b = new BIT();
+        b.setDaemon(true);
+        b.start();
+
+        PatientLogic.bThread=b;
+        LoginController.b=b;
 
         //Start the GUI
         launch(args);

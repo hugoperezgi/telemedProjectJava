@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 
+import controllers.BIT;
 import controllers.ClientLogic;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,6 +23,8 @@ public class LoginController {
 
     private ErrorPopup ErrorPopup = new ErrorPopup();
 
+    public static BIT b;
+
 
     public void logIn(ActionEvent a) throws IOException, ClassNotFoundException{
         Integer control = ClientLogic.logIn(username.getText(),psw.getText());
@@ -30,9 +33,11 @@ public class LoginController {
                 ErrorPopup.errorPopup(5);
                 break;
             case 0:
+                b.gtfo();
                 loadAdminUI(a);
                 break;
             case 1:
+                b.gtfo();
                 loadDoctUI(a);
                 break;
             case 2:

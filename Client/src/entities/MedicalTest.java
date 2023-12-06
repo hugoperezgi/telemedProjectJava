@@ -44,13 +44,13 @@ public class MedicalTest implements Serializable {
     public void getReportFile() throws IOException{
         FileOutputStream fos = new FileOutputStream("dowloadedReport.txt");
         DataOutputStream dout = new DataOutputStream(new BufferedOutputStream(fos));
-        dout.writeUTF("Report "+this.testID+" from Patient "+this.patientID+"\n");
+        dout.writeBytes("Report "+this.testID+" from Patient "+this.patientID+"\n");
         int i=0;
         for (String string : params) {
             if(string==null){continue;}
-            dout.writeUTF("Channel "+i+" data:\n");
-            dout.writeUTF(string);
-            dout.writeUTF("\n");
+            dout.writeBytes("Channel "+i+" data:\n");
+            dout.writeBytes(string);
+            dout.writeBytes("\n");
             i++;
         }
         dout.flush();

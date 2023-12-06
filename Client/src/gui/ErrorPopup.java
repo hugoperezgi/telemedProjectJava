@@ -301,4 +301,29 @@ public class ErrorPopup {
 			break;
 		}
 	}
+
+
+	public void errorPopup(String errMsg) throws IOException{
+		FXMLLoader loaderError;
+		Parent rootError;
+		Scene sceneError;
+		Stage stageError;
+		Image icon;
+		ErrorPopupController errorPopupController;
+
+		loaderError = new FXMLLoader(getClass().getResource("errorPopup.fxml"));
+		rootError = loaderError.load();
+		errorPopupController = loaderError.getController();
+		errorPopupController.displayErrorText("Error with Bitalino:\n"+errMsg);
+		sceneError = new Scene(rootError);
+		stageError = new Stage();
+		stageError.setScene(sceneError);
+
+		icon = new Image("img/errorIcon.png");
+		stageError.getIcons().add(icon);
+
+		stageError.setTitle("Error");
+		stageError.setResizable(false);
+		stageError.show();
+	}
 }

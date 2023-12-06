@@ -13,9 +13,7 @@ public class PatientLogic {
 
     public static void sendBitalinoData(String macAddrss,int[]channels, Integer reportID, int time){
 
-        bThread= new BIT(macAddrss,channels,time,reportID);
-        bThread.setDaemon(true);
-        bThread.start();
+        bThread.setup(macAddrss,channels,time,reportID);
 
     }
 

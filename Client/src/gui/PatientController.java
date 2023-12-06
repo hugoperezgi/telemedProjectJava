@@ -1,11 +1,14 @@
 package gui;
 
+import controllers.BIT;
 import controllers.ClientLogic;
 import controllers.DeadServer;
 import controllers.PatientLogic;
 import entities.MedicalTest;
 import entities.Patient;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +18,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -182,7 +186,7 @@ public class PatientController implements Initializable{
             textAreaPatientReportCreate.clear();        
             textReportDateCreate.setText("Current date: "+Date.valueOf(LocalDate.now()).toString());
         }
-
+    
         public void executeCreateReport(ActionEvent aEvent) throws IOException, ClassNotFoundException, InterruptedException{
             int time = (int) sliderRecordTime.getValue(); 
             stage = (Stage) ((Node) aEvent.getSource()).getScene().getWindow();
@@ -199,26 +203,119 @@ public class PatientController implements Initializable{
             }else{
                 if(checkBoxBitalinoData.isSelected()){
                     int[] i = {0,};
-                    stage.getScene().setCursor(Cursor.WAIT);
+                    // stage.getScene().setCursor(Cursor.WAIT);
                     PatientLogic.sendBitalinoData(textFieldBitalinoMAC.getText(),i,id,time);
 
-                    //Launch progress bar
-                    BitProgress bp = new BitProgress();
-                    bp.createWindow();
-                    int j=0;
-                    //Update progress bar from here, keep this ui thread frozen
-                    while((!BitProgress.pleaseStopIt)&&(j<time)){
-                        Thread.sleep(1000); 
-                        BitProgress.updateProgress((double)j/time);
-                        j++;
-                    }
-                    stage.getScene().setCursor(Cursor.DEFAULT);
+                    //Change main ui to loading bar :)
+                    swapToLoading();
+                    handleLoading();
+
+                    // stage.getScene().setCursor(Cursor.DEFAULT);
                     //Finish everything once completed :)
+                }else{                    
+                    resetCreateReport();
+                    hideAll();
                 }
-                SuccessPopup.successPopup(0);
             }
-            resetCreateReport();
         }
+
+    @FXML
+    private Pane paneLoading;
+
+        @FXML
+        private ProgressBar pb;
+        @FXML
+        private Text textLoading;
+
+        private void swapToLoading(){
+            hideAll();
+            //disableMenu();
+            paneLoading.setDisable(false);
+            paneLoading.setVisible(true);
+            textLoading.setText("Connecting to BITalino Device");
+        }
+
+        private void handleLoading(){
+
+            Task<Void> loadingTextTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    while(!BIT.running && BIT.err==1){
+                        Thread.sleep(50);
+                    }
+                    return null;
+                }
+                @Override
+                protected void succeeded() {
+
+                    if(BIT.err!=1){
+                        try {
+                            if(BIT.err==0){SuccessPopup.successPopup(0);}
+                            else{
+                                if(BIT.err==-1){
+                                    ErrorPopup e = new ErrorPopup();
+                                    e.errorPopup(BIT.errMsg);
+                                }else{
+                                    ErrorPopup e = new ErrorPopup();
+                                    e.errorPopup(0);
+                                }
+                            }
+                            hideAll();
+                            //enableMenu();
+                        } catch (Exception e){}                    
+                    }
+                    
+                    Platform.runLater(()->{
+                        textLoading.setText("Getting Data From BITalino Device");
+                    });
+                }
+            };
+            new Thread(loadingTextTask).start();
+
+            Task<Void> loaderTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    updateProgress(-1,0);
+                    while((!BIT.pleaseStopIt)||BIT.err==1){
+                        if(BIT.timeElapsed!=0){updateProgress((double) (((double)BIT.timeElapsed)/BIT.time),1);}
+                        Thread.sleep(100);
+                    }
+                    return null;
+                }
+                @Override
+                protected void succeeded() {
+
+                    try {
+                        if(BIT.err==0){SuccessPopup.successPopup(0);}
+                        else{
+                            if(BIT.err==-1){
+                                ErrorPopup e = new ErrorPopup();
+                                e.errorPopup(BIT.errMsg);
+                            }else{
+                                ErrorPopup e = new ErrorPopup();
+                                e.errorPopup(0);
+                            }
+                        }
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                    hideAll();
+
+                }
+            };
+            pb.progressProperty().bind(loaderTask.progressProperty());
+            new Thread(loaderTask).start();
+
+        }
+
+        @FXML
+        private void stop() throws InterruptedException{
+            BIT.pleaseStopIt=true;
+            Thread.sleep(1000);
+            hideAll();
+        }
+
+
 
     @FXML
     Button buttonCheckLight;    
@@ -293,6 +390,8 @@ public class PatientController implements Initializable{
         paneShowCliHist.setVisible(false);
         paneShowReport.setDisable(true);
         paneShowReport.setVisible(false);
+        paneLoading.setDisable(true);
+        paneLoading.setVisible(false);
 
     }
 
