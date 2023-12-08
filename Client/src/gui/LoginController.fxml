@@ -20,7 +20,7 @@
          </font>
       </PasswordField>
       <Button layoutX="274.0" layoutY="263.0" mnemonicParsing="false" onAction="#logIn" text="Log In!" />
-      <Text fill="#c4b7d7" layoutX="135.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="~(˘▾˘~) Log In to the App (~˘▾˘)~">
+      <Text fill="#c4b7d7" layoutX="135.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Log In">
          <font>
             <Font name="Gill Sans MT" size="24.0" />
          </font>

@@ -59,9 +59,9 @@ public class Query implements Serializable {
      * Send a report, expected a control response with the reportID
      * {@code Client -> Server} <p>
      */
-    public void construct_SendReport_Query(Integer patientId, String symptoms, Date date){
+    public void construct_SendReport_Query(Integer patientId, String symptoms, Date date,Byte sByte){
         this.queryType = (byte) 2;
-        this.medicalTest = new MedicalTest(patientId, symptoms, date);
+        this.medicalTest = new MedicalTest(patientId, symptoms, date, sByte);
         this.paramStrings=null;
     }
 

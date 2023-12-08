@@ -73,6 +73,7 @@ public class SQL {
                     + " signs TEXT NOT NULL,"	//Signs and Symptoms			   
                     + " doct_comments TEXT,"	//Doctor edits
                     + " date DATE NOT NULL,"				   
+                    + " symptoms BYTE NOT NULL,"				   
                     + " param0 LONGTEXT,"				   
                     + " param1 LONGTEXT,"				   
                     + " param2 LONGTEXT,"				   
@@ -259,11 +260,12 @@ public class SQL {
     }
 
 	public Integer addMedicalTest(MedicalTest medtest) throws SQLException{
-		String str = "INSERT INTO medical_tests (patient_id, signs, date) VALUES (?, ?, ?)";
+		String str = "INSERT INTO medical_tests (patient_id, signs, date, symptoms) VALUES (?, ?, ?, ?)";
 		PreparedStatement p = c.prepareStatement(str);
 		p.setInt(1, medtest.getPatientID());
 		p.setString(2, medtest.getPatientComments());
 		p.setDate(3, medtest.getReportDate());
+		p.setByte(4,medtest.getSympByte());
 		p.executeUpdate();
 		p.close();
 		String query = "SELECT last_insert_rowid() AS lastId";
@@ -303,7 +305,7 @@ public class SQL {
 		List <MedicalTest> mList = new ArrayList<MedicalTest>();
 		while(rs.next()){
 			String[] s = {rs.getString("param0"),rs.getString("param1"),rs.getString("param2"),rs.getString("param3"),rs.getString("param4"),rs.getString("param5")};
-			mList.add( new MedicalTest(rs.getInt("id"),rs.getInt("patient_id"), rs.getString("signs"), rs.getString("doct_comments"), rs.getDate("date"), s));
+			mList.add( new MedicalTest(rs.getInt("id"),rs.getInt("patient_id"), rs.getString("signs"), rs.getString("doct_comments"), rs.getDate("date"), s, rs.getByte("symptoms")));
 		}
 		p.close();
 		rs.close();

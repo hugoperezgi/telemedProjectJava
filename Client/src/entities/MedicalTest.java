@@ -15,23 +15,26 @@ public class MedicalTest implements Serializable {
     private String patientComments;
     private String doctorComments;
     private Date reportDate;
+    private Byte sympByte;
 
     private String[] params; 
 
-    public MedicalTest(Integer patID, String symptoms, Date date){
+    public MedicalTest(Integer patID, String symptoms, Date date,Byte s){
         this.patientID=patID;
         this.patientComments=symptoms;
         this.reportDate=date;
         this.params=null;
+        this.sympByte=s;
     }
     
-    public MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String[] params){
+    public MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String[] params, Byte sByte){
         this.patientID=patID;
         this.patientComments=symptoms;
         this.reportDate=date;
         this.testID=id;
         this.doctorComments=doctorComments;
         this.params=params;
+        this.sympByte=sByte;
     }
 
     public MedicalTest(Integer id, String doctVeredic){
@@ -81,5 +84,14 @@ public class MedicalTest implements Serializable {
             if(string!=null){ return "BITalino data available.";}
         }
         return "No BITalino data.";
+    }
+    public byte getSympByte() {
+        return sympByte;
+    }
+    public String bitalinoParams(){
+        for (String string : params) {
+            if(string!=null){ return string;}
+        }
+        return null;
     }
 }

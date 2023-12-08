@@ -86,7 +86,7 @@ public class LoginController {
         WorkerController wc = loader.getController();
         wc.setSelf();
         if(wc.myself==null){
-            ErrorPopup.errorPopup(11); //TODO "COuldnt retrive your data"
+            ErrorPopup.errorPopup(11);
         } else {
             Stage stage = (Stage) ((Node) aEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);

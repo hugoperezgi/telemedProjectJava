@@ -6,7 +6,6 @@ import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 import controllers.AdminLogic;
@@ -24,12 +23,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 
 public class AdminController implements Initializable{
     

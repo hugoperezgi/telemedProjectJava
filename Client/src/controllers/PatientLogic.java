@@ -26,9 +26,9 @@ public class PatientLogic {
      * @throws DeadServer
      * @throws ClassNotFoundException
      */
-    public static Integer createReport(Integer patientId, String patientComments, Date date) throws ClassNotFoundException, DeadServer{
+    public static Integer createReport(Integer patientId, String patientComments, Date date, Byte sbyte) throws ClassNotFoundException, DeadServer{
         Query q = new Query();
-        q.construct_SendReport_Query(patientId, patientComments, date);
+        q.construct_SendReport_Query(patientId, patientComments, date, sbyte);
             ClientLogic.sendQuery(q);
 
         Query serverResponse = ClientLogic.getServerResponse();

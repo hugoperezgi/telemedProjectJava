@@ -15,7 +15,12 @@ import entities.Worker;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -198,6 +203,16 @@ public class WorkerController implements Initializable {
         TextArea textAreaDocComments;
         @FXML
         Button downloadReport;
+        @FXML
+        Button graphReport;
+        @FXML
+        CheckBox checkBoxFatigueSR;
+        @FXML
+        CheckBox checkBoxNauseaSR;
+        @FXML
+        CheckBox checkBoxHeadacheSR;
+        @FXML
+        CheckBox checkBoxDizzinessSR;
 
         private void updateSelectedReport(MedicalTest m){
             textPatientName.setText("Patient ID: "+ m.getPatientID());
@@ -206,9 +221,21 @@ public class WorkerController implements Initializable {
             mtTest=m;
             if(t.contains("No")){
                 downloadReport.setDisable(true);
+                graphReport.setDisable(true);
             } else {
                 downloadReport.setDisable(false);
+                graphReport.setDisable(false);
             }
+
+            if((m.getSympByte() & 0b00000001) == 0b00000001){checkBoxHeadacheSR.setSelected(true);}else{checkBoxHeadacheSR.setSelected(false);}
+            checkBoxHeadacheSR.setDisable(true);
+            if((m.getSympByte() & 0b00000010) == 0b00000010){checkBoxNauseaSR.setSelected(true);}else{checkBoxNauseaSR.setSelected(false);}
+            checkBoxNauseaSR.setDisable(true);
+            if((m.getSympByte() & 0b00000100) == 0b00000100){checkBoxDizzinessSR.setSelected(true);}else{checkBoxDizzinessSR.setSelected(false);}
+            checkBoxDizzinessSR.setDisable(true);
+            if((m.getSympByte() & 0b00001000) == 0b00001000){checkBoxFatigueSR.setSelected(true);}else{checkBoxFatigueSR.setSelected(false);}
+            checkBoxFatigueSR.setDisable(true);
+
             textBitalinoSignalAvailable.setText(t);
             textAreaDocComments.setText(m.getDoctorComments());
             textAreaDocComments.setEditable(true);
@@ -271,6 +298,65 @@ public class WorkerController implements Initializable {
         }
 
     @FXML
+    Pane paneGraph;
+
+        @FXML
+        LineChart bitalinoChart;
+        @FXML
+        NumberAxis axisX;
+        @FXML
+        NumberAxis axisY;
+
+        @FXML
+        private void checkDataGraph() throws IOException{
+            
+            hideAll();
+
+            String data=mtTest.bitalinoParams();
+            if(data==null){ErrorPopup.errorPopup(0);return;}
+            String[] dataArray = data.split(" ");
+            Integer[] dataValues = new Integer[dataArray.length];
+            int i=0;
+            for (String d : dataArray) {
+                dataValues[i]=Integer.parseInt(d);
+                i++;
+            }
+            double maxV=dataValues[0], minV=dataValues[0];
+            for (Integer integer : dataValues) {
+                if(integer>maxV){maxV=integer;}
+                if(integer<minV){minV=integer;}
+            }
+
+            axisY.setAutoRanging(true);
+            axisX.setAutoRanging(true);
+            axisX.setLowerBound(0);
+            axisX.setUpperBound(dataArray.length);
+            axisY.setLowerBound(minV);
+            axisY.setUpperBound(maxV);
+            // axisY.setTickUnit((maxV-minV)/dataValues.length);
+            
+            XYChart.Series<Number,Number> s = new XYChart.Series<Number,Number>();
+            i=0;
+            for (Integer integer : dataValues) {
+                s.getData().add(new Data<Number,Number>(i,integer));
+                i++;
+            }
+            bitalinoChart.getData().clear();
+            bitalinoChart.getData().add(s);
+            bitalinoChart.setLegendVisible(false);
+            paneGraph.setDisable(false);
+            paneGraph.setVisible(true);
+        }
+
+        public void backToCheckReport(){
+            hideAll();
+            paneReportView.setVisible(true);
+            paneReportView.setDisable(false);
+        }
+
+
+
+    @FXML
     Button buttonCheckLight;    
     @FXML
     Button buttonCheckDrk;    
@@ -308,6 +394,8 @@ public class WorkerController implements Initializable {
         panePatientReportsView.setDisable(true);
         panePatientView.setVisible(false);
         panePatientView.setDisable(true);
+        paneGraph.setDisable(true);
+        paneGraph.setVisible(false);
         comboBoxSelectedPatient.setPromptText("Select a Patient.");
         comboBoxSelectedReport.setPromptText("Select a Report.");
         comboBoxSelectedPatient.getSelectionModel().clearSelection();

@@ -12,7 +12,6 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
@@ -27,6 +26,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
+
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -62,6 +66,16 @@ public class PatientController implements Initializable{
         TextArea textAreaDocComments;
         @FXML
         Button downloadReport;
+        @FXML
+        Button graphReport;
+        @FXML
+        CheckBox checkBoxFatigueSR;
+        @FXML
+        CheckBox checkBoxNauseaSR;
+        @FXML
+        CheckBox checkBoxHeadacheSR;
+        @FXML
+        CheckBox checkBoxDizzinessSR;
 
         private void updateSelectedReport(MedicalTest m){
             textPatientName.setText("Patient ID: "+ m.getPatientID());
@@ -69,9 +83,11 @@ public class PatientController implements Initializable{
             String t = m.bitalinoDataAttached();
             if(t.contains("No")){
                 downloadReport.setDisable(true);
+                graphReport.setDisable(true);
             } else {
                 mtTest=m;
                 downloadReport.setDisable(false);
+                graphReport.setDisable(false);
             }
             textBitalinoSignalAvailable.setText(t);
             if(m.getDoctorComments()==null){
@@ -79,6 +95,16 @@ public class PatientController implements Initializable{
             }else{
                 textAreaDocComments.setText(m.getDoctorComments());
             }
+
+            if((m.getSympByte() & 0b00000001) == 0b00000001){checkBoxHeadacheSR.setSelected(true);}else{checkBoxHeadacheSR.setSelected(false);}
+            checkBoxHeadacheSR.setDisable(true);
+            if((m.getSympByte() & 0b00000010) == 0b00000010){checkBoxNauseaSR.setSelected(true);}else{checkBoxNauseaSR.setSelected(false);}
+            checkBoxNauseaSR.setDisable(true);
+            if((m.getSympByte() & 0b00000100) == 0b00000100){checkBoxDizzinessSR.setSelected(true);}else{checkBoxDizzinessSR.setSelected(false);}
+            checkBoxDizzinessSR.setDisable(true);
+            if((m.getSympByte() & 0b00001000) == 0b00001000){checkBoxFatigueSR.setSelected(true);}else{checkBoxFatigueSR.setSelected(false);}
+            checkBoxFatigueSR.setDisable(true);
+
             textAreaDocComments.setEditable(false);
             textAreaPatientReport.setText(m.getPatientComments());
             textAreaPatientReport.setEditable(false);
@@ -103,6 +129,64 @@ public class PatientController implements Initializable{
             paneShowCliHist.setDisable(false);
         }
     
+    @FXML
+    Pane paneGraph;
+
+        @FXML
+        LineChart bitalinoChart;
+        @FXML
+        NumberAxis axisX;
+        @FXML
+        NumberAxis axisY;
+
+        @FXML
+        private void checkDataGraph() throws IOException{
+            
+            hideAll();
+
+            String data=mtTest.bitalinoParams();
+            if(data==null){ErrorPopup.errorPopup(0);return;}
+            String[] dataArray = data.split(" ");
+            Integer[] dataValues = new Integer[dataArray.length];
+            int i=0;
+            for (String d : dataArray) {
+                dataValues[i]=Integer.parseInt(d);
+                i++;
+            }
+            double maxV=dataValues[0], minV=dataValues[0];
+            for (Integer integer : dataValues) {
+                if(integer>maxV){maxV=integer;}
+                if(integer<minV){minV=integer;}
+            }
+
+            axisY.setAutoRanging(true);
+            axisX.setAutoRanging(true);
+            axisX.setLowerBound(0);
+            axisX.setUpperBound(dataArray.length);
+            axisY.setLowerBound(minV);
+            axisY.setUpperBound(maxV);
+            // axisY.setTickUnit((maxV-minV)/dataValues.length);
+            
+            XYChart.Series<Number,Number> s = new XYChart.Series<Number,Number>();
+            i=0;
+            for (Integer integer : dataValues) {
+                s.getData().add(new Data<Number,Number>(i,integer));
+                i++;
+            }
+            bitalinoChart.getData().clear();
+            bitalinoChart.getData().add(s);
+            bitalinoChart.setLegendVisible(false);
+            paneGraph.setDisable(false);
+            paneGraph.setVisible(true);
+        }
+
+        public void backToCheckReport(){
+            hideAll();
+            paneShowReport.setVisible(true);
+            paneShowReport.setDisable(false);
+        }
+
+
     @FXML
     Pane paneShowCliHist;
 
@@ -159,6 +243,14 @@ public class PatientController implements Initializable{
         TextField textFieldBitalinoMAC;
         @FXML
         Slider sliderRecordTime;
+        @FXML
+        CheckBox checkBoxFatigue;
+        @FXML
+        CheckBox checkBoxNausea;
+        @FXML
+        CheckBox checkBoxHeadache;
+        @FXML
+        CheckBox checkBoxDizziness;
 
         public void bitalinoCheckBox(){
             if(checkBoxBitalinoData.isSelected()){
@@ -179,6 +271,10 @@ public class PatientController implements Initializable{
             checkBoxBitalinoData.setSelected(false);
             textFieldBitalinoMAC.setEditable(false);
             textFieldBitalinoMAC.clear();
+            checkBoxDizziness.setSelected(false);
+            checkBoxFatigue.setSelected(false);
+            checkBoxHeadache.setSelected(false);
+            checkBoxNausea.setSelected(false);
             sliderRecordTime.setValue(10);
             sliderRecordTime.setDisable(true);
             textFieldBitalinoMAC.setText("XX:XX:XX:XX:XX:XX");
@@ -192,8 +288,15 @@ public class PatientController implements Initializable{
             stage = (Stage) ((Node) aEvent.getSource()).getScene().getWindow();
             String t= textAreaPatientReportCreate.getText();
             Integer id=-1;
+
+            byte sbyte=0b00000000;
+            if(checkBoxHeadache.isSelected()){sbyte|=0b00000001;}
+            if(checkBoxNausea.isSelected()){sbyte|=0b00000010;}
+            if(checkBoxDizziness.isSelected()){sbyte|=0b00000100;}
+            if(checkBoxFatigue.isSelected()){sbyte|=0b00001000;}
+            
             try {
-                id = PatientLogic.createReport(myself.getPatientID(),t,Date.valueOf(LocalDate.now()));
+                id = PatientLogic.createReport(myself.getPatientID(),t,Date.valueOf(LocalDate.now()),sbyte);
             } catch (DeadServer e) {
                 e.printStackTrace();
                 logOut();
@@ -297,7 +400,6 @@ public class PatientController implements Initializable{
                             }
                         }
                     } catch (Exception e) {
-                        // TODO: handle exception
                     }
                     hideAll();
 
@@ -383,7 +485,9 @@ public class PatientController implements Initializable{
         buttonCheckLight.setVisible(true);
         buttonCreateLight.setDisable(false);
         buttonCreateLight.setVisible(true);
-        
+
+        paneGraph.setDisable(true);
+        paneGraph.setVisible(false);
         paneCreateReport.setDisable(true);
         paneCreateReport.setVisible(false);
         paneShowCliHist.setDisable(true);

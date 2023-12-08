@@ -65,7 +65,7 @@ public class BIT extends Thread{
 
             BITalino biTalino = new BITalino();
             
-            int sr = 1000;
+            int sr = 100;
             biTalino.open(macAddrss, sr);
             
             biTalino.start(channels);

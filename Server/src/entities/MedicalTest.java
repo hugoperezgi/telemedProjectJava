@@ -15,23 +15,26 @@ public class MedicalTest implements Serializable {
     private String patientComments;
     private String doctorComments;
     private Date reportDate;
+    private Byte sympByte;
 
     private String[] params; 
 
-    public MedicalTest(Integer patID, String symptoms, Date date){
+    public MedicalTest(Integer patID, String symptoms, Date date,Byte s){
         this.patientID=patID;
         this.patientComments=symptoms;
         this.reportDate=date;
         this.params=null;
+        this.sympByte=s;
     }
     
-    public MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String[] params){
+    public MedicalTest(Integer id, Integer patID, String symptoms, String doctorComments, Date date, String[] params, Byte sByte){
         this.patientID=patID;
         this.patientComments=symptoms;
         this.reportDate=date;
         this.testID=id;
         this.doctorComments=doctorComments;
         this.params=params;
+        this.sympByte=sByte;
     }
 
     public MedicalTest(Integer id, String doctVeredic){
@@ -44,14 +47,16 @@ public class MedicalTest implements Serializable {
     public void getReportFile() throws IOException{
         FileOutputStream fos = new FileOutputStream("dowloadedReport.txt");
         DataOutputStream dout = new DataOutputStream(new BufferedOutputStream(fos));
-        dout.writeUTF("Report "+this.testID+" from Patient "+this.patientID+"\n");
+        dout.writeBytes("Report "+this.testID+" from Patient "+this.patientID+"\n");
         int i=0;
         for (String string : params) {
-            dout.writeUTF("Channel "+i+" data:\n");
-            dout.writeUTF(string);
-            dout.writeUTF("\n");
+            if(string==null){continue;}
+            dout.writeBytes("Channel "+i+" data:\n");
+            dout.writeBytes(string);
+            dout.writeBytes("\n");
             i++;
         }
+        dout.flush();
         dout.close();
         fos.close();
     }
@@ -75,7 +80,18 @@ public class MedicalTest implements Serializable {
         return testID;
     }
     public String bitalinoDataAttached(){
-        if(params==null){return "No BITalino data.";}
-        return "BITalino data available.";
+        for (String string : params) {
+            if(string!=null){ return "BITalino data available.";}
+        }
+        return "No BITalino data.";
+    }
+    public byte getSympByte() {
+        return sympByte;
+    }
+    public String bitalinoParams(){
+        for (String string : params) {
+            if(string!=null){ return string;}
+        }
+        return null;
     }
 }
